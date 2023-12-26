@@ -1,34 +1,30 @@
-import InfoList from '@/components/InfoList';
 import MainStats from '@/components/MainStats';
 import Card from '@/components/UI/Card';
-import { useEffect, useState } from 'react';
+import { useMainStore } from '@/store/mainStore';
+import { useEffect } from 'react';
 
 const Home = () => {
-   const [nodeInfo, setNodeInfo] = useState([]);
-   const [mainInfo, setMainInfo] = useState([]);
+
+   const mainStore = useMainStore();
 
    useEffect(() => {
-      const fetchData = async () => {
-         await fetch('http://localhost:3003/bitcoin/node')
-            .then((res) => res.json())
-            .then((data) => setNodeInfo(data))
-            .catch();
-
-         await fetch('http://localhost:3003/bitcoin/main')
-            .then((res) => res.json())
-            .then((data) => setMainInfo(data))
-            .catch();
-      };
-      fetchData();
+      mainStore.fetch();
    }, []);
 
    return (
       <div className="container">
-         <MainStats stats={mainInfo} />
+         <MainStats
+            totalConnections={mainStore.totalConnections}
+            totalUploadTraffic={mainStore.totalUploadTraffic}
+            totalDownloadTraffic={mainStore.totalDownloadTraffic}
+            bannedPeers={mainStore.bannedPeers}
+            txInMeempool={mainStore.txInMeempool}
+            latestBlock={mainStore.latestBlock}
+         />
          <div className="container mt-2">
             <div className="row gap-3">
                <Card title="Title">
-                  <InfoList infoList={nodeInfo} />
+                  <p>Card 1</p>
                </Card>
                <Card>
                   <p>Card 2</p>

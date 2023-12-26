@@ -22,14 +22,14 @@ router.get('/main', async function (req, res, next) {
    const [netTotals, networkInfo, listBanned, mempoolInfo, blockCount] =
       await client.command(batch);
 
-   res.json([
-      { name: 'sent', value: netTotals.totalbytessent },
-      { name: 'received', value: netTotals.totalbytesrecv },
-      { name: 'connections', value: networkInfo.connections },
-      { name: 'banned', value: listBanned.length },
-      { name: 'mempool', value: mempoolInfo.size },
-      { name: 'blocks', value: blockCount },
-   ]);
+   res.json({
+      sent: netTotals.totalbytessent,
+      received: netTotals.totalbytesrecv,
+      connections: networkInfo.connections,
+      bannedPeersCount: listBanned.length,
+      mempool: mempoolInfo.size,
+      blocks: blockCount,
+   });
 });
 
 router.get('/node', async function (req, res, next) {
