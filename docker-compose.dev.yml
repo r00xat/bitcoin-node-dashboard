@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+   frontend:
+      container_name: bnd-frontend
+      build:
+         context: ./frontend
+         dockerfile: Dockerfile.dev
+      volumes:
+         - ./frontend:/app
+      ports:
+         - '3001:3000'
+
+   backend:
+      container_name: bnd-backend
+      build:
+         context: ./backend
+         dockerfile: Dockerfile.dev
+      env_file:
+         - ./.env
+      volumes:
+         - ./backend:/app
+      ports:
+         - '3003:4000'
