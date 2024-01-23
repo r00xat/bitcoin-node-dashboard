@@ -40,12 +40,28 @@ router.get('/node', async function (req, res, next) {
 
    const [uptime, networkInfo] = await client.command(batch);
 
-   res.json([
-      { name: 'client', value: networkInfo.subversion.replaceAll('/', '') },
-      { name: 'protocol', value: networkInfo.protocolversion },
-      { name: 'services', value: networkInfo.localservices },
-      { name: 'uptime', value: uptime },
-   ]);
+   const networks = {
+      ipv4: networkInfo.networks.find(network => network.name === 'ipv4'),
+      ipv6: networkInfo.networks.find(network => network.name === 'ipv6'),
+      onion: networkInfo.networks.find(network => network.name === 'onion'),
+      i2p: networkInfo.networks.find(network => network.name === 'i2p'),
+      cjdns: networkInfo.networks.find(network => network.name === 'cjdns'),
+   }
+
+   res.json({
+      client: networkInfo.subversion.replaceAll('/', ''),
+      protocolVersion: networkInfo.protocolversion,
+      port: process.env.BTC_PORT,
+      services: networkInfo.localservicesnames,
+      uptime,
+      networks: {
+         ipv4: networks.ipv4 ? networks.ipv4.reachable : false,
+         ipv6: networks.ipv6 ? networks.ipv6.reachable : false,
+         onion: networks.onion ? networks.onion.reachable : false,
+         i2p: networks.i2p ? networks.i2p.reachable : false,
+         cjdns: networks.cjdns ? networks.cjdns.reachable : false
+      }
+   });
 });
 
 export default router;

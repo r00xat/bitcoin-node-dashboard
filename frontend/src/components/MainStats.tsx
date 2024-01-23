@@ -52,7 +52,7 @@ export default function MainStats(props: MainStatsProps) {
                <div className="p-2 border rounded-2">
                   <p className="m-0">Latest Block</p>
                   <h2 className="m-0">{formatLargeNumber(props.latestBlock)}</h2>
-                  <p className="m-0">10 mins ago</p>
+                  <p className="m-0">10 (fake) mins ago</p>
                </div>
             </div>
          </div>

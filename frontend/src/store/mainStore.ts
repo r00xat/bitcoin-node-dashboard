@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import api from './api/api';
 
 type MainStore = {
    totalConnections: number;
@@ -20,11 +21,9 @@ export const useMainStore = create<MainStore>()(
       txInMeempool: 0,
       latestBlock: 0,
       fetch: async () => {
-         await fetch('http://localhost:3003/bitcoin/main')
-            .then((res) => res.json())
-            .then((data) => {
-               set(
-                  {
+         await api.get('/bitcoin/main')
+            .then(({data}) => {
+               set({
                      totalConnections: data.connections,
                      totalUploadTraffic: data.sent,
                      totalDownloadTraffic: data.received,
@@ -33,7 +32,7 @@ export const useMainStore = create<MainStore>()(
                      latestBlock: data.blocks,
                   },
                   false,
-                  'fetch'
+                  'fetchMainStore'
                );
             });
       },
