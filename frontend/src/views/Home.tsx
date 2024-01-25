@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import { formatSeconds } from "@/utils/utils";
+import { formatSeconds, formatBytes, capitalizeFirst, compactNumber, formatHashPerSecond } from "@/utils/utils";
 import Card from '@/components/UI/Card';
 import MainStats from '@/components/MainStats';
 import { useMainStore } from '@/store/mainStore';
 import { useNodeStore } from '@/store/nodeStore';
+import { useBlockchainStore } from '@/store/blockchainStore';
 import { Tooltip } from 'bootstrap';
 import clsx from 'clsx';
 
@@ -11,6 +12,7 @@ const Home = () => {
 
    const mainStore = useMainStore();
    const nodeStore = useNodeStore();
+   const blockchainStore = useBlockchainStore();
 
    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
    const tooltipList = [...tooltipTriggerList].map(tooltip => new Tooltip(tooltip))
@@ -18,6 +20,7 @@ const Home = () => {
    useEffect(() => {
       mainStore.fetch();
       nodeStore.fetch();
+      blockchainStore.fetch();
    }, []);
 
    return (
@@ -108,8 +111,25 @@ const Home = () => {
                      </tbody>
                   </table>
                </Card>
-               <Card>
-                  <p>Card 2</p>
+               <Card title="Blockchain">
+                  <ul className="list-unstyled">
+                     <li>
+                        <span className="fw-bold">Chain</span>
+                        <span className="float-end">{capitalizeFirst(blockchainStore.chain)}</span>
+                     </li>
+                     <li>
+                        <span className="fw-bold">Size</span>
+                        <span className="float-end">{formatBytes(blockchainStore.size)}</span>
+                     </li>
+                     <li>
+                        <span className="fw-bold">Difficulty</span>
+                        <span className="float-end">{compactNumber(blockchainStore.difficulty)}</span>
+                     </li>
+                     <li>
+                        <span className="fw-bold">Hashrate</span>
+                        <span className="float-end">{formatHashPerSecond(blockchainStore.hashRate)}</span>
+                     </li>
+                  </ul>
                </Card>
                <Card>
                   <p>Card 3</p>

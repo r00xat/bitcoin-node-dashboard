@@ -105,4 +105,22 @@ router.get('/node', async function (req, res, next) {
    });
 });
 
+router.get('/blockchain', async function (req, res, next) {
+
+   const batch = [
+      { method: 'getblockchaininfo', parameters: [] },
+      { method: 'getmininginfo', parameters: [] },
+   ];
+
+   const [blockchainInfo, miningInfo] = await client.command(batch);
+
+   res.json({
+      chain: miningInfo.chain,
+      size: blockchainInfo.size_on_disk,
+      difficulty: miningInfo.difficulty,
+      hashRate: miningInfo.networkhashps,
+   })
+
+});
+
 export default router;
