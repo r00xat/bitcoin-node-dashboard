@@ -33,9 +33,9 @@ const Home = () => {
             txInMeempool={mainStore.txInMeempool}
             latestBlock={mainStore.latestBlock}
          />
-         <div className="container mt-2">
-            <div className="row gap-3">
-               <Card title="Node">
+         <div className="container mt-2 p-0">
+            <div className="row">
+               <Card title="Node" className="col-12 col-xl-4 h-100">
                   <table>
                      <tbody>
                         <tr className='lh-lg'>
@@ -111,7 +111,7 @@ const Home = () => {
                      </tbody>
                   </table>
                </Card>
-               <Card title="Blockchain">
+               <Card title="Blockchain" className="col-12 col-xl-4 h-100">
                   <ul className="list-unstyled">
                      <li>
                         <span className="fw-bold">Chain</span>
@@ -131,8 +131,7 @@ const Home = () => {
                      </li>
                   </ul>
                </Card>
-               <Card>
-                  <p>Card 3</p>
+               <Card className="col-12 col-xl-4 h-100">
                </Card>
             </div>
          </div>
