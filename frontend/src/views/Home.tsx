@@ -35,83 +35,85 @@ const Home = () => {
          />
          <div className="container mt-2 p-0">
             <div className="row">
-               <Card title="Node" className="col-12 col-xl-4 h-100">
-                  <table>
-                     <tbody>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>Client</td>
-                           <td className='float-end'>{nodeStore.client}</td>
-                        </tr>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>Protocol</td>
-                           <td className='float-end'>{nodeStore.protocolVersion}</td>
-                        </tr>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>Port</td>
-                           <td className='float-end'>{nodeStore.port}</td>
-                        </tr>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>Services</td>
-                           <td className='float-end'>
-                              {
-                                 nodeStore.services.map((service, i) => {
-                                    return <span className="float-end badge bg-secondary ms-1 mb-1" key={i}>{service}</span>
-                                 })
-                              }
-                           </td>
-                        </tr>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>Uptime</td>
-                           <td className='float-end'>{formatSeconds(nodeStore.uptime)}</td>
-                        </tr>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>IPv4</td>
-                           <td className={clsx('float-end', nodeStore.networks.ipv4.address && 'text-decoration-underline')}
-                              data-bs-toggle={nodeStore.networks.ipv4.address ? 'tooltip' : undefined}
-                              data-bs-placement="top"
-                              data-bs-title={nodeStore.networks.ipv4.address}
-                              role={nodeStore.networks.ipv4.address ? 'button' : undefined}>
-                              {nodeStore.networks.ipv4 ? 'Yes' : 'No'}
-                           </td>
-                        </tr>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>IPv6</td>
-                           <td className={clsx('float-end', nodeStore.networks.ipv6.address && 'text-decoration-underline')}
-                              data-bs-toggle={nodeStore.networks.ipv6.address ? 'tooltip' : undefined}
-                              data-bs-placement="top"
-                              data-bs-title={nodeStore.networks.ipv6.address}
-                              role={nodeStore.networks.ipv6.address ? 'button' : undefined}>
-                              {nodeStore.networks.ipv6 ? 'Yes' : 'No'}
-                           </td>
-                        </tr>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>Tor</td>
-                           <td className={clsx('float-end', nodeStore.networks.tor.address && 'text-decoration-underline')}
-                              data-bs-toggle={nodeStore.networks.tor.address ? 'tooltip' : undefined}
-                              data-bs-placement="top"
-                              data-bs-title={nodeStore.networks.tor.address}
-                              role={nodeStore.networks.tor.address ? 'button' : undefined}>
-                              {nodeStore.networks.tor ? 'Yes' : 'No'}
-                           </td>
-                        </tr>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>I2P</td>
-                           <td className={clsx('float-end', nodeStore.networks.i2p.address && 'text-decoration-underline')}
-                              data-bs-toggle={nodeStore.networks.i2p.address ? 'tooltip' : undefined}
-                              data-bs-placement="top"
-                              data-bs-title={nodeStore.networks.i2p.address}
-                              role={nodeStore.networks.i2p.address ? 'button' : undefined}>
-                              {nodeStore.networks.i2p ? 'Yes' : 'No'}
-                           </td>
-                        </tr>
-                        <tr className='lh-lg'>
-                           <td className='fw-bold'>Cjdns</td>
-                           <td className='float-end'>{nodeStore.networks.cjdns ? 'Yes' : 'No'}</td>
-                        </tr>
-                     </tbody>
-                  </table>
+               <Card title="Node" className="col-12 col-xl-4 h-100 mb-3">
+                  <ul className="list-unstyled">
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>Client</span>
+                        <span className='float-end'>{nodeStore.client}</span>
+                     </li>
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>Protocol</span>
+                        <span className='float-end'>{nodeStore.protocolVersion}</span>
+                     </li>
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>Port</span>
+                        <span className='float-end'>{nodeStore.port}</span>
+                     </li>
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>Services</span>
+                        <ul className="list-unstyled list-inline lh-base ms-4">
+                           {
+                              nodeStore.services.map((service, i) => {
+                                 return (
+                                    <li key={i} className="list-inline-item">
+                                       <span className='badge bg-secondary'>{service}</span>
+                                    </li>
+                                 )
+                              })
+                           }
+                        </ul>
+                     </li>
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>Uptime</span>
+                        <span className='float-end'>{formatSeconds(nodeStore.uptime)}</span>
+                     </li>
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>IPv4</span>
+                        <span className={clsx('float-end', nodeStore.networks.ipv4.address && 'text-decoration-underline')}
+                           data-bs-toggle={nodeStore.networks.ipv4.address ? 'tooltip' : undefined}
+                           data-bs-placement="top"
+                           data-bs-title={nodeStore.networks.ipv4.address}
+                           role={nodeStore.networks.ipv4.address ? 'button' : undefined}>
+                           {nodeStore.networks.ipv4 ? 'Yes' : 'No'}
+                        </span>
+                     </li>
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>IPv6</span>
+                        <span className={clsx('float-end', nodeStore.networks.ipv6.address && 'text-decoration-underline')}
+                           data-bs-toggle={nodeStore.networks.ipv6.address ? 'tooltip' : undefined}
+                           data-bs-placement="top"
+                           data-bs-title={nodeStore.networks.ipv6.address}
+                           role={nodeStore.networks.ipv6.address ? 'button' : undefined}>
+                           {nodeStore.networks.ipv6 ? 'Yes' : 'No'}
+                        </span>
+                     </li>
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>Tor</span>
+                        <span className={clsx('float-end', nodeStore.networks.tor.address && 'text-decoration-underline')}
+                           data-bs-toggle={nodeStore.networks.tor.address ? 'tooltip' : undefined}
+                           data-bs-placement="top"
+                           data-bs-title={nodeStore.networks.tor.address}
+                           role={nodeStore.networks.tor.address ? 'button' : undefined}>
+                           {nodeStore.networks.tor ? 'Yes' : 'No'}
+                        </span>
+                     </li>
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>I2P</span>
+                        <span className={clsx('float-end', nodeStore.networks.i2p.address && 'text-decoration-underline')}
+                           data-bs-toggle={nodeStore.networks.i2p.address ? 'tooltip' : undefined}
+                           data-bs-placement="top"
+                           data-bs-title={nodeStore.networks.i2p.address}
+                           role={nodeStore.networks.i2p.address ? 'button' : undefined}>
+                           {nodeStore.networks.i2p ? 'Yes' : 'No'}
+                        </span>
+                     </li>
+                     <li className='lh-lg'>
+                        <span className='fw-bold'>Cjdns</span>
+                        <span className='float-end'>{nodeStore.networks.cjdns ? 'Yes' : 'No'}</span>
+                     </li>
+                  </ul>
                </Card>
-               <Card title="Blockchain" className="col-12 col-xl-4 h-100">
+               <Card title="Blockchain" className="col-12 col-xl-4 h-100 mb-3">
                   <ul className="list-unstyled">
                      <li>
                         <span className="fw-bold">Chain</span>
@@ -131,7 +133,7 @@ const Home = () => {
                      </li>
                   </ul>
                </Card>
-               <Card className="col-12 col-xl-4 h-100">
+               <Card title="Peer Clients" className="col-12 col-xl-4 h-100 mb-3">
                </Card>
             </div>
          </div>
