@@ -75,7 +75,7 @@ router.get('/node', async function (req, res, next) {
    });
 
    res.json({
-      client: networkInfo.subversion.replaceAll('/', ''),
+      client: networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
       protocolVersion: networkInfo.protocolversion,
       port: process.env.BTC_PORT,
       services: networkInfo.localservicesnames,
@@ -121,6 +121,26 @@ router.get('/blockchain', async function (req, res, next) {
       hashRate: miningInfo.networkhashps,
    })
 
+});
+
+router.get('/peers', async function (req, res, next) {
+   const peers = await client.getPeerInfo();
+
+   const returnPeers = peers.map(peer => {
+      return {
+         id: peer.id,
+         address: peer.addr,
+         services: peer.servicesnames,
+         bytessent: peer.bytessent,
+         bytesrecv: peer.bytesrecv,
+         conectionTime: peer.conntime,
+         version: peer.version,
+         subversion: peer.subver.replace(/^\/+/, '').replace(/\/+$/, ''),
+         connection_type: peer.connection_type,
+      }
+   });
+
+   res.json(returnPeers);
 });
 
 export default router;

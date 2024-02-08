@@ -7,6 +7,7 @@ import { useNodeStore } from '@/store/nodeStore';
 import { useBlockchainStore } from '@/store/blockchainStore';
 import { Tooltip } from 'bootstrap';
 import clsx from 'clsx';
+import TopPeerClients from './TopPeerClients';
 
 const Home = () => {
 
@@ -15,14 +16,15 @@ const Home = () => {
    const blockchainStore = useBlockchainStore();
 
    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
    const tooltipList = [...tooltipTriggerList].map(tooltip => new Tooltip(tooltip))
 
    useEffect(() => {
       mainStore.fetch();
       nodeStore.fetch();
-      blockchainStore.fetch();
+      blockchainStore.fetch();   
    }, []);
-
+   
    return (
       <div className="container">
          <MainStats
@@ -36,20 +38,20 @@ const Home = () => {
          <div className="container mt-2 p-0">
             <div className="row">
                <Card title="Node" className="col-12 col-xl-4 h-100 mb-3">
-                  <ul className="list-unstyled">
-                     <li className='lh-lg'>
+                  <ul className="list-unstyled lh-lg">
+                     <li>
                         <span className='fw-bold'>Client</span>
                         <span className='float-end'>{nodeStore.client}</span>
                      </li>
-                     <li className='lh-lg'>
+                     <li>
                         <span className='fw-bold'>Protocol</span>
                         <span className='float-end'>{nodeStore.protocolVersion}</span>
                      </li>
-                     <li className='lh-lg'>
+                     <li>
                         <span className='fw-bold'>Port</span>
                         <span className='float-end'>{nodeStore.port}</span>
                      </li>
-                     <li className='lh-lg'>
+                     <li>
                         <span className='fw-bold'>Services</span>
                         <ul className="list-unstyled list-inline lh-base ms-4">
                            {
@@ -63,11 +65,11 @@ const Home = () => {
                            }
                         </ul>
                      </li>
-                     <li className='lh-lg'>
+                     <li>
                         <span className='fw-bold'>Uptime</span>
                         <span className='float-end'>{formatSeconds(nodeStore.uptime)}</span>
                      </li>
-                     <li className='lh-lg'>
+                     <li>
                         <span className='fw-bold'>IPv4</span>
                         <span className={clsx('float-end', nodeStore.networks.ipv4.address && 'text-decoration-underline')}
                            data-bs-toggle={nodeStore.networks.ipv4.address ? 'tooltip' : undefined}
@@ -77,7 +79,7 @@ const Home = () => {
                            {nodeStore.networks.ipv4 ? 'Yes' : 'No'}
                         </span>
                      </li>
-                     <li className='lh-lg'>
+                     <li>
                         <span className='fw-bold'>IPv6</span>
                         <span className={clsx('float-end', nodeStore.networks.ipv6.address && 'text-decoration-underline')}
                            data-bs-toggle={nodeStore.networks.ipv6.address ? 'tooltip' : undefined}
@@ -87,7 +89,7 @@ const Home = () => {
                            {nodeStore.networks.ipv6 ? 'Yes' : 'No'}
                         </span>
                      </li>
-                     <li className='lh-lg'>
+                     <li>
                         <span className='fw-bold'>Tor</span>
                         <span className={clsx('float-end', nodeStore.networks.tor.address && 'text-decoration-underline')}
                            data-bs-toggle={nodeStore.networks.tor.address ? 'tooltip' : undefined}
@@ -97,7 +99,7 @@ const Home = () => {
                            {nodeStore.networks.tor ? 'Yes' : 'No'}
                         </span>
                      </li>
-                     <li className='lh-lg'>
+                     <li>
                         <span className='fw-bold'>I2P</span>
                         <span className={clsx('float-end', nodeStore.networks.i2p.address && 'text-decoration-underline')}
                            data-bs-toggle={nodeStore.networks.i2p.address ? 'tooltip' : undefined}
@@ -107,14 +109,14 @@ const Home = () => {
                            {nodeStore.networks.i2p ? 'Yes' : 'No'}
                         </span>
                      </li>
-                     <li className='lh-lg'>
+                     <li>
                         <span className='fw-bold'>Cjdns</span>
                         <span className='float-end'>{nodeStore.networks.cjdns ? 'Yes' : 'No'}</span>
                      </li>
                   </ul>
                </Card>
                <Card title="Blockchain" className="col-12 col-xl-4 h-100 mb-3">
-                  <ul className="list-unstyled">
+                  <ul className="list-unstyled lh-lg">
                      <li>
                         <span className="fw-bold">Chain</span>
                         <span className="float-end">{capitalizeFirst(blockchainStore.chain)}</span>
@@ -134,6 +136,7 @@ const Home = () => {
                   </ul>
                </Card>
                <Card title="Peer Clients" className="col-12 col-xl-4 h-100 mb-3">
+                  <TopPeerClients/>
                </Card>
             </div>
          </div>
