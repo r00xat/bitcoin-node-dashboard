@@ -27,12 +27,13 @@ const TopPeerClients = () => {
       "#66c2a5",
       "#3288bd",
       "#5e4fa2"
-    ];
+   ];
 
    const doughnutData = {
       labels: Array.from(mostCommonClients.keys()),
       datasets: [
          {
+            label: 'Peers',
             data: Array.from(mostCommonClients.values()),
             borderWidth: 1,
             backgroundColor: colors
@@ -55,46 +56,37 @@ const TopPeerClients = () => {
       return <div>Loading...</div>
    }
 
+   const TopPeerClientsChartLegend = (props: { peers: Map<string, number> }) => {
+      return (
+         <div>
+            <button className="btn btn-outline-primary w-100 mt-2" data-bs-toggle="collapse" data-bs-target="#topPeerClientsLegend">
+               Peer details
+            </button>
+               <ul className="list-unstyled lh-md collapse" id="topPeerClientsLegend">
+                  {
+                     Array.from(props.peers).map(([client, count], index) => {
+                        const total = peerStore.peers.length;
+                        const percentage = ((count / total) * 100).toFixed(0);
+                        return (
+                           <li key={client} className="border-bottom m-1">
+                              <span className="fw-semibold d-inline-block text-truncate">
+                                 <i className="bi bi-square-fill" style={{ color: colors[index] }}></i>
+                                 {` ${index + 1}. ${client}`}
+                              </span>
+                              <span className="float-end">{percentage}%</span>
+                           </li>
+                        )
+                     })
+                  }
+               </ul>
+         </div>
+      )
+   }
+
    return (
       <div>
          <Doughnut data={doughnutData} options={doughnutOptions} />
          <TopPeerClientsChartLegend peers={mostCommonClients} />
-      </div>
-   )
-}
-
-const TopPeerClientsChartLegend = (props: { peers: Map<string, number> }) => {
-   return (
-      <div className="accordion mt-3" id="peer-legend">
-         <div className="accordion-item">
-            <h2 className="accordion-header">
-               <button className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#legend"
-                  aria-expanded="false">
-                  Peer details
-               </button>
-            </h2>
-            <div id="legend"
-               className="accordion-collapse collapse"
-               data-bs-parent="#peer-legend">
-               <div className="accordion-body pb-0">
-                  <ul className="list-unstyled lh-md">
-                     {
-                        Array.from(props.peers).map(([client, count]) => {
-                           return (
-                              <li key={client} className="border-bottom m-1">
-                                 <span className="fw-semibold d-inline-block text-truncate">{client}</span>
-                                 <span className="float-end">{count}</span>
-                              </li>
-                           )
-                        })
-                     }
-                  </ul>
-               </div>
-            </div>
-         </div>
       </div>
    )
 }
@@ -105,6 +97,7 @@ const getMostCommonClient = (peers: Peer[]) => {
 
    peers.forEach(peer => {
       if (peer.subversion) {
+         peer.subversion = peer.subversion.replaceAll(':', ' ').replaceAll('/', ' / ')
          clients.set(peer.subversion, (clients.get(peer.subversion) || 0) + 1);
       }
    });
