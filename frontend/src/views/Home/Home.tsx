@@ -15,9 +15,8 @@ const Home = () => {
    const nodeStore = useNodeStore();
    const blockchainStore = useBlockchainStore();
 
-   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-   const tooltipList = [...tooltipTriggerList].map(tooltip => new Tooltip(tooltip))
+   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+   [...tooltipTriggerList].map(tooltip => new Tooltip(tooltip));
 
    useEffect(() => {
       mainStore.fetch();
@@ -35,9 +34,9 @@ const Home = () => {
             txInMeempool={mainStore.txInMeempool}
             latestBlock={mainStore.latestBlock}
          />
-         <div className="container mt-2 p-0">
+         <div className="container-fluid mt-2 p-0">
             <div className="row">
-               <Card title="Node" className="col-12 col-xl-4 h-100 mb-3">
+               <Card title="Node" className="col-12 col-lg-4 h-100 mb-3">
                   <ul className="list-unstyled lh-lg">
                      <li>
                         <span className='fw-bold'>Client</span>
@@ -115,7 +114,7 @@ const Home = () => {
                      </li>
                   </ul>
                </Card>
-               <Card title="Blockchain" className="col-12 col-xl-4 h-100 mb-3">
+               <Card title="Blockchain" className="col-12 col-lg-4 h-100 mb-3">
                   <ul className="list-unstyled lh-lg">
                      <li>
                         <span className="fw-bold">Chain</span>
@@ -135,7 +134,7 @@ const Home = () => {
                      </li>
                   </ul>
                </Card>
-               <Card title="Peer Clients" className="col-12 col-xl-4 h-100 mb-3">
+               <Card title="Top Peer Clients" className="col-12 col-lg-4 h-100 mb-3">
                   <TopPeerClients/>
                </Card>
             </div>

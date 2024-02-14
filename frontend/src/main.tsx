@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Chart as ChartJS, Colors, ArcElement, Tooltip, Legend } from "chart.js";
 
 import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.js';
+import 'bootstrap/dist/js/bootstrap.esm.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import '@/main.scss';
