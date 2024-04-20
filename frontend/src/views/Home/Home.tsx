@@ -39,19 +39,23 @@ const Home = () => {
                <Card title="Node" className="col-12 col-lg-4 h-100 mb-3">
                   <ul className="list-unstyled lh-lg">
                      <li>
-                        <span className='fw-bold'>Client</span>
+                        <i className="bi bi-person-vcard"></i>
+                        <span className='fw-bold'> Client</span>
                         <span className='float-end'>{nodeStore.client}</span>
                      </li>
                      <li>
-                        <span className='fw-bold'>Protocol</span>
+                        <i className="bi bi-arrow-left-right"></i>
+                        <span className='fw-bold'> Protocol</span>
                         <span className='float-end'>{nodeStore.protocolVersion}</span>
                      </li>
                      <li>
-                        <span className='fw-bold'>Port</span>
+                        <i className="bi bi-ethernet"></i>
+                        <span className='fw-bold'> Port</span>
                         <span className='float-end'>{nodeStore.port}</span>
                      </li>
                      <li>
-                        <span className='fw-bold'>Services</span>
+                        <i className="bi bi-megaphone"></i>
+                        <span className='fw-bold'> Services</span>
                         <ul className="list-unstyled list-inline lh-base ms-4">
                            {
                               nodeStore.services.map((service, i) => {
@@ -65,11 +69,13 @@ const Home = () => {
                         </ul>
                      </li>
                      <li>
-                        <span className='fw-bold'>Uptime</span>
+                        <i className="bi bi-clock-history"></i>
+                        <span className='fw-bold'> Uptime</span>
                         <span className='float-end'>{formatSeconds(nodeStore.uptime)}</span>
                      </li>
                      <li>
-                        <span className='fw-bold'>IPv4</span>
+                        <i className={clsx("bi", !nodeStore.networks.ipv4 && "bi-x-square text-danger", nodeStore.networks.ipv4 && "bi-check-square text-success")}></i>
+                        <span className='fw-bold'> IPv4</span>
                         <span className={clsx('float-end', nodeStore.networks.ipv4.address && 'text-decoration-underline')}
                            data-bs-toggle={nodeStore.networks.ipv4.address ? 'tooltip' : undefined}
                            data-bs-placement="top"
@@ -79,7 +85,8 @@ const Home = () => {
                         </span>
                      </li>
                      <li>
-                        <span className='fw-bold'>IPv6</span>
+                        <i className={clsx("bi", !nodeStore.networks.ipv6 && "bi-x-square text-danger", nodeStore.networks.ipv6 && "bi-check-square text-success")}></i>
+                        <span className='fw-bold'> IPv6</span>
                         <span className={clsx('float-end', nodeStore.networks.ipv6.address && 'text-decoration-underline')}
                            data-bs-toggle={nodeStore.networks.ipv6.address ? 'tooltip' : undefined}
                            data-bs-placement="top"
@@ -89,7 +96,8 @@ const Home = () => {
                         </span>
                      </li>
                      <li>
-                        <span className='fw-bold'>Tor</span>
+                     <i className={clsx("bi", !nodeStore.networks.tor && "bi-x-square text-danger", nodeStore.networks.tor && "bi-check-square text-success")}></i>
+                        <span className='fw-bold'> Tor</span>
                         <span className={clsx('float-end', nodeStore.networks.tor.address && 'text-decoration-underline')}
                            data-bs-toggle={nodeStore.networks.tor.address ? 'tooltip' : undefined}
                            data-bs-placement="top"
@@ -99,7 +107,8 @@ const Home = () => {
                         </span>
                      </li>
                      <li>
-                        <span className='fw-bold'>I2P</span>
+                     <i className={clsx("bi", !nodeStore.networks.i2p && "bi-x-square text-danger", nodeStore.networks.i2p && "bi-check-square text-success")}></i>
+                        <span className='fw-bold'> I2P</span>
                         <span className={clsx('float-end', nodeStore.networks.i2p.address && 'text-decoration-underline')}
                            data-bs-toggle={nodeStore.networks.i2p.address ? 'tooltip' : undefined}
                            data-bs-placement="top"
@@ -109,7 +118,8 @@ const Home = () => {
                         </span>
                      </li>
                      <li>
-                        <span className='fw-bold'>Cjdns</span>
+                        <i className={clsx("bi", !nodeStore.networks.cjdns && "bi-x-square text-danger", nodeStore.networks.cjdns && "bi-check-square text-success")}></i>
+                        <span className='fw-bold'> Cjdns</span>
                         <span className='float-end'>{nodeStore.networks.cjdns ? 'Yes' : 'No'}</span>
                      </li>
                   </ul>
@@ -117,19 +127,23 @@ const Home = () => {
                <Card title="Blockchain" className="col-12 col-lg-4 h-100 mb-3">
                   <ul className="list-unstyled lh-lg">
                      <li>
-                        <span className="fw-bold">Chain</span>
+                        <i className="bi bi-copy"></i>
+                        <span className="fw-bold"> Chain</span>
                         <span className="float-end">{capitalizeFirst(blockchainStore.chain)}</span>
                      </li>
                      <li>
-                        <span className="fw-bold">Size</span>
+                        <i className="bi bi-hdd"></i>
+                        <span className="fw-bold"> Size</span>
                         <span className="float-end">{formatBytes(blockchainStore.size)}</span>
                      </li>
                      <li>
-                        <span className="fw-bold">Difficulty</span>
+                        <i className="bi bi-cpu"></i>
+                        <span className="fw-bold"> Difficulty</span>
                         <span className="float-end">{compactNumber(blockchainStore.difficulty)}</span>
                      </li>
                      <li>
-                        <span className="fw-bold">Hashrate</span>
+                        <i className="bi bi-gear"></i>
+                        <span className="fw-bold"> Hashrate</span>
                         <span className="float-end">{formatHashPerSecond(blockchainStore.hashRate)}</span>
                      </li>
                   </ul>
