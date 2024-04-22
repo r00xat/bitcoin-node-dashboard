@@ -1,12 +1,14 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { IconHome, IconUsersGroup } from '@tabler/icons-react';
+import './NavBar.scss'
 
 export default function NavBar() {
    return (
-      <nav className="navbar navbar-expand-sm bg-dark" data-bs-theme="dark">
+      <nav id="navbar" className="navbar navbar-expand-sm bg-dark" data-bs-theme="dark">
          <div className="container-fluid">
-            <Link className="navbar-brand" to="/">
+            <NavLink className="navbar-brand" to="/">
                Node Dashboard
-            </Link>
+            </NavLink>
             <button
                className="navbar-toggler"
                type="button"
@@ -21,14 +23,14 @@ export default function NavBar() {
             <div className="collapse navbar-collapse" id="navbarNav">
                <ul className="navbar-nav">
                   <li className="nav-item">
-                     <Link className="nav-link active" to="/">
-                        Home
-                     </Link>
+                     <NavLink className="nav-link" to="/">
+                        <IconHome className="icon me-2"/>Home
+                     </NavLink>
                   </li>
                   <li className="nav-item">
-                     <Link className="nav-link" to="/peers">
-                        Peers
-                     </Link>
+                     <NavLink className="nav-link" to="/peers">
+                        <IconUsersGroup className="icon me-2"/>Peers
+                     </NavLink>
                   </li>
                </ul>
             </div>
