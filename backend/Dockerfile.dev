@@ -2,13 +2,13 @@ FROM node:20.10.0-slim
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 
-RUN npm install pnpm -g
+RUN npm install -g pnpm@9
 RUN pnpm install
 
 COPY . .
 
-EXPOSE ${PORT}
+EXPOSE 4000
 
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "run", "dev"]
