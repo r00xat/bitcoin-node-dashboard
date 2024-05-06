@@ -8,6 +8,7 @@ services:
          dockerfile: Dockerfile.dev
       volumes:
          - ./frontend:/app
+         - /app/node_modules/
       ports:
          - '1100:3000'
       environment:
@@ -22,5 +23,6 @@ services:
          - ./.env
       volumes:
          - ./backend:/app
+         - /app/node_modules/
       ports:
          - '1101:4000'
