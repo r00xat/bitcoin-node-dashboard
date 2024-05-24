@@ -7,7 +7,7 @@
       "build": "tsc",
       "prestart": "npm run build",
       "start": "node ./dist",
-      "dev": "ts-node-dev --quiet .",
+      "dev": "ts-node-dev .",
       "prettier": "npx prettier --write ."
    },
    "keywords": [],
