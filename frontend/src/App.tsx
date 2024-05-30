@@ -1,13 +1,15 @@
 import NavBar from '@/components/UI/NavBar';
 import AppRouter from '@/router/AppRouter';
+import React from 'react';
 
-function App() {
+const App: React.FC = () => {
+
    return (
       <>
-         <NavBar />
+         <NavBar/>
          <AppRouter />
       </>
    );
-}
+};
 
 export default App;

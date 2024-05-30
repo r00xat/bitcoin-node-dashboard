@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { IconHome, IconUsersGroup } from '@tabler/icons-react';
+import { FaHouseChimney, FaUsers } from "react-icons/fa6";
 import './NavBar.scss'
 
 export default function NavBar() {
@@ -24,12 +24,12 @@ export default function NavBar() {
                <ul className="navbar-nav">
                   <li className="nav-item">
                      <NavLink className="nav-link" to="/">
-                        <IconHome className="icon me-2"/>Home
+                        <FaHouseChimney className="icon me-1"/>Home
                      </NavLink>
                   </li>
                   <li className="nav-item">
                      <NavLink className="nav-link" to="/peers">
-                        <IconUsersGroup className="icon me-2"/>Peers
+                        <FaUsers className="icon me-1"/>Peers
                      </NavLink>
                   </li>
                </ul>
