@@ -1,3 +1,15 @@
 {
+   "runArgs": ["--device=/dev/net/tun"],
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/node:1": {
+			"nodeGypDependencies": true,
+			"version": "18",
+			"nvmVersion": "latest"
+		},
+      "ghcr.io/tailscale/codespace/tailscale": {}
+	},
    "forwardPorts": [1100, 1101]
 }
