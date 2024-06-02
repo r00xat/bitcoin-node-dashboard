@@ -36,6 +36,20 @@
    font-weight: bold;
 }
 
+.custom-card {
+   padding-top: 15px;
+}
+
+.custom-card-title {
+   text-align: center;
+   font-weight: 500;
+   font-size: x-large;
+}
+
+.custom-card-body {
+   font-size: 16px;
+}
+
 @include media-breakpoint-up(sm) {
    .content-wrapper {
 
