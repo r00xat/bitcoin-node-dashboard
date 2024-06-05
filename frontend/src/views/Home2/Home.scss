@@ -53,12 +53,16 @@
 @include media-breakpoint-up(sm) {
    .content-wrapper {
 
-      &:nth-child(1n) .main-stat {
-         margin: 20px 10px 0px 20px
+      &:nth-child(1n) {
+         .main-stat, .custom-card {
+            margin: 20px 10px 0px 20px
+         }
       }
 
-      &:nth-child(2n) .main-stat {
-         margin: 20px 20px 0px 10px
+      &:nth-child(2n) {
+         .main-stat, .custom-card{
+            margin: 20px 20px 0px 10px
+         }
       }
    }
 }

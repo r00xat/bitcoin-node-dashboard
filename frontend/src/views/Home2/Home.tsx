@@ -1,99 +1,48 @@
 import { useEffect } from 'react';
-import { formatLargeNumber, formatBytes, formatSeconds } from '@/utils/utils';
+import { formatLargeNumber, formatBytes, formatSeconds, capitalizeFirst, formatHashPerSecond, compactNumber } from '@/utils/utils';
 import {
-   FaCircleNodes,
-   FaCloudArrowDown,
-   FaCloudArrowUp,
-   FaDatabase,
    FaIdCard,
    FaArrowRightArrowLeft,
    FaNetworkWired,
    FaClock,
-   FaBullhorn
+   FaBullhorn,
+   FaLink,
+   FaHardDrive,
+   FaMicrochip,
+   FaGears,
+   FaCube
 } from 'react-icons/fa6';
-import { useMainStore } from '@/store/mainStore';
 import { useNodeStore } from '@/store/nodeStore';
+import { useBlockchainStore } from '@/store/blockchainStore';
 
 import './Home.scss';
+import Header from './Header';
 
 const Home = () => {
-   const mainStore = useMainStore();
    const nodeStore = useNodeStore();
+   const blockchainStore = useBlockchainStore();
 
    useEffect(() => {
-      mainStore.fetch();
       nodeStore.fetch();
+      blockchainStore.fetch();   
    }, []);
 
    return (
       <>
+         <Header/>
          <div className="container-fluid">
             <div className="row">
-               <div className="col-12 col-sm-6 col-xl-3 p-0 content-wrapper">
-                  <div className="content main-stat">
-                     <div className="icon-wrapper">
-                        <FaCircleNodes size={70} color="#36a3f7" />
-                     </div>
-                     <div className="main-stat-description">
-                        <div className="main-stat-title">Total Connections</div>
-                        <div className="main-stat-value">
-                           {formatLargeNumber(mainStore.totalConnections)}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div className="col-12 col-sm-6 col-xl-3 p-0 content-wrapper">
-                  <div className="content main-stat">
-                     <div className="icon-wrapper">
-                        <FaCloudArrowUp size={70} color="#f4516c" />
-                     </div>
-                     <div className="main-stat-description">
-                        <div className="main-stat-title">Upload Traffic</div>
-                        <div className="main-stat-value">
-                           {formatBytes(mainStore.totalUploadTraffic)}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div className="col-12 col-sm-6 col-xl-3 p-0 content-wrapper">
-                  <div className="content main-stat">
-                     <div className="icon-wrapper">
-                        <FaCloudArrowDown size={70} color="#34bfa3" />
-                     </div>
-                     <div className="main-stat-description">
-                        <div className="main-stat-title">Download Traffic</div>
-                        <div className="main-stat-value">
-                           {formatBytes(mainStore.totalDownloadTraffic)}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div className="col-12 col-sm-6 col-xl-3 p-0 content-wrapper">
-                  <div className="content main-stat">
-                     <div className="icon-wrapper">
-                        <FaDatabase size={70} color="#ffcb8c" />
-                     </div>
-                     <div className="main-stat-description">
-                        <div className="main-stat-title">TX in Mempool</div>
-                        <div className="main-stat-value">
-                           {formatLargeNumber(mainStore.txInMeempool)}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div className="container-fluid">
-            <div className="row">
-               <div className="col-12 p-0 content-wrapper">
+               <div className="col-12 col-md-3 p-0 content-wrapper">
                   <div className="content custom-card">
-                     <div className="custom-card-title">Node</div>
-                     <hr className='m-2' />
+                     <div className="custom-card-title">
+                        Node
+                     </div>
+                     <hr className='m-2 mx-0'/>
                      <div className="custom-card-body">
-                        <ul className="list-unstyled">
+                        <ul className="list-unstyled m-0">
                            <li>
                               <div className="d-flex align-items-center justify-content-between">
-                                 <div>
+                                 <div className='d-flex align-items-center'>
                                     <FaIdCard className="me-1" />
                                     <span className="fw-semibold">Client</span>
                                  </div>
@@ -102,7 +51,7 @@ const Home = () => {
                            </li>
                            <li>
                               <div className="d-flex align-items-center justify-content-between">
-                                 <div>
+                                 <div className='d-flex align-items-center'>
                                     <FaArrowRightArrowLeft className="me-1" />
                                     <span className="fw-semibold">Protocol</span>
                                  </div>
@@ -111,7 +60,7 @@ const Home = () => {
                            </li>
                            <li>
                               <div className="d-flex align-items-center justify-content-between">
-                                 <div>
+                                 <div className='d-flex align-items-center'>
                                     <FaNetworkWired className="me-1" />
                                     <span className="fw-semibold">Port</span>
                                  </div>
@@ -120,7 +69,7 @@ const Home = () => {
                            </li>
                            <li>
                               <div className="d-flex align-items-center justify-content-between">
-                                 <div>
+                                 <div className='d-flex align-items-center'>
                                     <FaClock className="me-1" />
                                     <span className="fw-semibold">Uptime</span>
                                  </div>
@@ -133,20 +82,76 @@ const Home = () => {
                                     <FaBullhorn className="me-1" />
                                     <span className="fw-semibold">Services</span>
                                  </div>
-                                 <span className="float-end d-flex flex-wrap justify-content-flex-end">
-                                    <span className="badge bg-secondary ms-1 my-1">
-                                       NETWORK
-                                    </span>
-                                    <span className="badge bg-secondary ms-1 my-1">
-                                       BLOOM
-                                    </span>
-                                    <span className="badge bg-secondary ms-1 my-1">
-                                       WITNESS
-                                    </span>
-                                    <span className="badge bg-secondary ms-1 my-1">
-                                       NETWORK_LIMITED
-                                    </span>
+                                 <span className="float-end d-flex flex-wrap justify-content-flex-end flex-row-reverse">
+                                    {
+                                       nodeStore.services.map((service, i) => {
+                                          return (
+                                             <span  key={i} className="badge bg-secondary ms-1 my-1">
+                                                {service}
+                                             </span>
+                                          )
+                                       })
+                                    }
                                  </span>
+                              </div>
+                           </li>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div className="row">
+              <div className="col-12 col-md-3 p-0 content-wrapper">
+                  <div className="content custom-card">
+                     <div className="custom-card-title">
+                        Blockchain
+                     </div>
+                     <hr className='m-2 mx-0'/>
+                     <div className="custom-card-body">
+                        <ul className="list-unstyled m-0">
+                           <li>
+                              <div className="d-flex align-items-center justify-content-between">
+                                 <div className='d-flex align-items-center'>
+                                    <FaLink className="me-1" />
+                                    <span className="fw-semibold">Chain</span>
+                                 </div>
+                                 <span className="float-end">{capitalizeFirst(blockchainStore.chain)}</span>
+                              </div>
+                           </li>
+                           <li>
+                              <div className="d-flex align-items-center justify-content-between">
+                                 <div className='d-flex align-items-center'>
+                                    <FaHardDrive className="me-1" />
+                                    <span className="fw-semibold">Size</span>
+                                 </div>
+                                 <span className="float-end">{formatBytes(blockchainStore.size)}</span>
+                              </div>
+                           </li>
+                           <li>
+                              <div className="d-flex align-items-center justify-content-between">
+                                 <div className='d-flex align-items-center'>
+                                    <FaMicrochip className="me-1" />
+                                    <span className="fw-semibold">Difficulty</span>
+                                 </div>
+                                 <span className="float-end">{compactNumber(blockchainStore.difficulty)}</span>
+                              </div>
+                           </li>
+                           <li>
+                              <div className="d-flex align-items-center justify-content-between">
+                                 <div className='d-flex align-items-center'>
+                                    <FaGears className="me-1" />
+                                    <span className="fw-semibold">Hashrate</span>
+                                 </div>
+                                 <span className="float-end">{formatHashPerSecond(blockchainStore.hashRate)}</span>
+                              </div>
+                           </li>
+                           <li>
+                              <div className="d-flex align-items-center justify-content-between">
+                                 <div className='d-flex align-items-center'>
+                                    <FaCube className="me-1" />
+                                    <span className="fw-semibold">Last Block</span>
+                                 </div>
+                                 <span className="float-end">{formatLargeNumber(800000)}</span>
                               </div>
                            </li>
                         </ul>
