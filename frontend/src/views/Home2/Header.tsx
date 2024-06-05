@@ -11,63 +11,51 @@ export default function Header() {
       mainStore.fetch();
    }, []);
 
+   const data = [
+      {
+         icon: <FaCircleNodes size={70} color="#36a3f7" />,
+         title: "Total Connections",
+         value: formatLargeNumber(mainStore.totalConnections)
+      },
+      {
+         icon: <FaCloudArrowUp size={70} color="#f4516c" />,
+         title: "Upload Traffic",
+         value: formatBytes(mainStore.totalUploadTraffic)
+      },
+      {
+         icon: <FaCloudArrowDown size={70} color="#34bfa3" />,
+         title: "Download Traffic",
+         value: formatBytes(mainStore.totalDownloadTraffic)
+      },
+      {
+         icon: <FaDatabase size={70} color="#ffcb8c" />,
+         title: "TX in Mempool",
+         value: formatLargeNumber(mainStore.txInMeempool)
+      }
+   ];
+
    return (
       <header>
-         <div className="container-fluid">
-            <div className="row">
-               <div className="col-12 col-sm-6 col-xl-3 p-0 content-wrapper">
-                  <div className="content main-stat">
-                     <div className="icon-wrapper">
-                        <FaCircleNodes size={70} color="#36a3f7" />
-                     </div>
-                     <div className="main-stat-description">
-                        <div className="main-stat-title">Total Connections</div>
-                        <div className="main-stat-value">
-                           {formatLargeNumber(mainStore.totalConnections)}
+         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 m-3">
+            {
+               data.map((stat, i) => {
+                  return (
+                     <div key={i} className="flex items-center justify-between bg-white rounded-md p-5">
+                        <div>
+                           { stat.icon }
+                        </div>
+                        <div className="flex flex-col justify-between h-full text-right">
+                           <div className="font-bold text-lg text-gray-400">
+                              { stat.title }
+                           </div>
+                           <div className="font-bold text-2xl text-gray-600">
+                              { stat.value }
+                           </div>
                         </div>
                      </div>
-                  </div>
-               </div>
-               <div className="col-12 col-sm-6 col-xl-3 p-0 content-wrapper">
-                  <div className="content main-stat">
-                     <div className="icon-wrapper">
-                        <FaCloudArrowUp size={70} color="#f4516c" />
-                     </div>
-                     <div className="main-stat-description">
-                        <div className="main-stat-title">Upload Traffic</div>
-                        <div className="main-stat-value">
-                           {formatBytes(mainStore.totalUploadTraffic)}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div className="col-12 col-sm-6 col-xl-3 p-0 content-wrapper">
-                  <div className="content main-stat">
-                     <div className="icon-wrapper">
-                        <FaCloudArrowDown size={70} color="#34bfa3" />
-                     </div>
-                     <div className="main-stat-description">
-                        <div className="main-stat-title">Download Traffic</div>
-                        <div className="main-stat-value">
-                           {formatBytes(mainStore.totalDownloadTraffic)}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div className="col-12 col-sm-6 col-xl-3 p-0 content-wrapper">
-                  <div className="content main-stat">
-                     <div className="icon-wrapper">
-                        <FaDatabase size={70} color="#ffcb8c" />
-                     </div>
-                     <div className="main-stat-description">
-                        <div className="main-stat-title">TX in Mempool</div>
-                        <div className="main-stat-value">
-                           {formatLargeNumber(mainStore.txInMeempool)}
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
+                  );
+               })
+            }
          </div>
       </header>
    );
