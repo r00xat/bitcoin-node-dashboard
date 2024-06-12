@@ -1,159 +1,133 @@
 import { useEffect } from 'react';
-import { formatSeconds, formatBytes, capitalizeFirst, compactNumber, formatHashPerSecond } from "@/utils/utils";
-import Card from '@/components/UI/Card';
-import MainStats from '@/components/MainStats';
-import { useMainStore } from '@/store/mainStore';
+import { formatLargeNumber, formatBytes, formatSeconds, capitalizeFirst, formatHashPerSecond, compactNumber } from '@/utils/utils';
+import {
+   FaIdCard,
+   FaArrowRightArrowLeft,
+   FaNetworkWired,
+   FaClock,
+   FaBullhorn,
+   FaLink,
+   FaHardDrive,
+   FaMicrochip,
+   FaGears,
+   FaCube
+} from 'react-icons/fa6';
 import { useNodeStore } from '@/store/nodeStore';
 import { useBlockchainStore } from '@/store/blockchainStore';
-import { Tooltip } from 'bootstrap';
-import clsx from 'clsx';
-import TopPeerClients from './TopPeerClients';
+
+import './Home.scss';
+import Header from './Header';
+import StatsCard, { StatsList } from '@/components/UI/StatsCard';
 
 const Home = () => {
-
-   const mainStore = useMainStore();
    const nodeStore = useNodeStore();
    const blockchainStore = useBlockchainStore();
 
-   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-   [...tooltipTriggerList].map(tooltip => new Tooltip(tooltip));
-
    useEffect(() => {
-      mainStore.fetch();
       nodeStore.fetch();
-      blockchainStore.fetch();   
+      blockchainStore.fetch();
    }, []);
-   
+
+   const nodeStats: StatsList[] = [
+      {
+         icon: <FaIdCard />,
+         name: 'Client',
+         value: nodeStore.client
+      },
+      {
+         icon: <FaArrowRightArrowLeft />,
+         name: 'Protocol',
+         value: nodeStore.protocolVersion
+      },
+      {
+         icon: <FaNetworkWired />,
+         name: 'Port',
+         value: nodeStore.port
+      },
+      {
+         icon: <FaClock />,
+         name: 'Uptime',
+         value: formatSeconds(nodeStore.uptime)
+      },
+      {
+         icon: <FaBullhorn />,
+         name: 'Services',
+         value: nodeStore.services
+      }
+   ];
+
+   const blockchainStats: StatsList[] = [
+      {
+         icon: <FaLink />,
+         name: 'Chain',
+         value: capitalizeFirst(blockchainStore.chain)
+      },
+      {
+         icon: <FaHardDrive />,
+         name: 'Size',
+         value: formatBytes(blockchainStore.size)
+      },
+      {
+         icon: <FaMicrochip />,
+         name: 'Difficulty',
+         value: compactNumber(blockchainStore.difficulty)
+      },
+      {
+         icon: <FaGears />,
+         name: 'Hashrate',
+         value: formatHashPerSecond(blockchainStore.hashRate)
+      },
+      {
+         icon: <FaCube />,
+         name: 'Last Block',
+         value: formatLargeNumber(800000)
+      },
+      {
+         icon: <FaClock />,
+         name: 'Last Block Time',
+         value: formatSeconds(nodeStore.uptime) + ' ago'
+      }
+   ];
+
+   const networkStats: StatsList[] = [
+      {
+         icon: null,
+         name: 'IPv4',
+         value: true
+      },
+      {
+         icon: null,
+         name: 'IPv6',
+         value: true
+      },
+      {
+         icon: null,
+         name: 'Tor',
+         value: false
+      },
+      {
+         icon: null,
+         name: 'Traffic Limit Set',
+         value: false
+      },
+      {
+         icon: null,
+         name: 'Traffic Limited',
+         value: false
+      }
+   ];
+
    return (
-      <div className="container">
-         <MainStats
-            totalConnections={mainStore.totalConnections}
-            totalUploadTraffic={mainStore.totalUploadTraffic}
-            totalDownloadTraffic={mainStore.totalDownloadTraffic}
-            bannedPeers={mainStore.bannedPeers}
-            txInMeempool={mainStore.txInMeempool}
-            latestBlock={mainStore.latestBlock}
-         />
-         <div className="container-fluid mt-2 p-0">
-            <div className="row">
-               <Card title="Node" className="col-12 col-lg-4 h-100 mb-3">
-                  <ul className="list-unstyled lh-lg">
-                     <li>
-                        <i className="bi bi-person-vcard"></i>
-                        <span className='fw-bold'> Client</span>
-                        <span className='float-end'>{nodeStore.client}</span>
-                     </li>
-                     <li>
-                        <i className="bi bi-arrow-left-right"></i>
-                        <span className='fw-bold'> Protocol</span>
-                        <span className='float-end'>{nodeStore.protocolVersion}</span>
-                     </li>
-                     <li>
-                        <i className="bi bi-ethernet"></i>
-                        <span className='fw-bold'> Port</span>
-                        <span className='float-end'>{nodeStore.port}</span>
-                     </li>
-                     <li>
-                        <i className="bi bi-megaphone"></i>
-                        <span className='fw-bold'> Services</span>
-                        <ul className="list-unstyled list-inline lh-base ms-4">
-                           {
-                              nodeStore.services.map((service, i) => {
-                                 return (
-                                    <li key={i} className="list-inline-item">
-                                       <span className='badge bg-secondary'>{service}</span>
-                                    </li>
-                                 )
-                              })
-                           }
-                        </ul>
-                     </li>
-                     <li>
-                        <i className="bi bi-clock-history"></i>
-                        <span className='fw-bold'> Uptime</span>
-                        <span className='float-end'>{formatSeconds(nodeStore.uptime)}</span>
-                     </li>
-                     <li>
-                        <i className={clsx("bi", !nodeStore.networks.ipv4 && "bi-x-square text-danger", nodeStore.networks.ipv4 && "bi-check-square text-success")}></i>
-                        <span className='fw-bold'> IPv4</span>
-                        <span className={clsx('float-end', nodeStore.networks.ipv4.address && 'text-decoration-underline')}
-                           data-bs-toggle={nodeStore.networks.ipv4.address ? 'tooltip' : undefined}
-                           data-bs-placement="top"
-                           data-bs-title={nodeStore.networks.ipv4.address}
-                           role={nodeStore.networks.ipv4.address ? 'button' : undefined}>
-                           {nodeStore.networks.ipv4 ? 'Yes' : 'No'}
-                        </span>
-                     </li>
-                     <li>
-                        <i className={clsx("bi", !nodeStore.networks.ipv6 && "bi-x-square text-danger", nodeStore.networks.ipv6 && "bi-check-square text-success")}></i>
-                        <span className='fw-bold'> IPv6</span>
-                        <span className={clsx('float-end', nodeStore.networks.ipv6.address && 'text-decoration-underline')}
-                           data-bs-toggle={nodeStore.networks.ipv6.address ? 'tooltip' : undefined}
-                           data-bs-placement="top"
-                           data-bs-title={nodeStore.networks.ipv6.address}
-                           role={nodeStore.networks.ipv6.address ? 'button' : undefined}>
-                           {nodeStore.networks.ipv6 ? 'Yes' : 'No'}
-                        </span>
-                     </li>
-                     <li>
-                     <i className={clsx("bi", !nodeStore.networks.tor && "bi-x-square text-danger", nodeStore.networks.tor && "bi-check-square text-success")}></i>
-                        <span className='fw-bold'> Tor</span>
-                        <span className={clsx('float-end', nodeStore.networks.tor.address && 'text-decoration-underline')}
-                           data-bs-toggle={nodeStore.networks.tor.address ? 'tooltip' : undefined}
-                           data-bs-placement="top"
-                           data-bs-title={nodeStore.networks.tor.address}
-                           role={nodeStore.networks.tor.address ? 'button' : undefined}>
-                           {nodeStore.networks.tor ? 'Yes' : 'No'}
-                        </span>
-                     </li>
-                     <li>
-                     <i className={clsx("bi", !nodeStore.networks.i2p && "bi-x-square text-danger", nodeStore.networks.i2p && "bi-check-square text-success")}></i>
-                        <span className='fw-bold'> I2P</span>
-                        <span className={clsx('float-end', nodeStore.networks.i2p.address && 'text-decoration-underline')}
-                           data-bs-toggle={nodeStore.networks.i2p.address ? 'tooltip' : undefined}
-                           data-bs-placement="top"
-                           data-bs-title={nodeStore.networks.i2p.address}
-                           role={nodeStore.networks.i2p.address ? 'button' : undefined}>
-                           {nodeStore.networks.i2p ? 'Yes' : 'No'}
-                        </span>
-                     </li>
-                     <li>
-                        <i className={clsx("bi", !nodeStore.networks.cjdns && "bi-x-square text-danger", nodeStore.networks.cjdns && "bi-check-square text-success")}></i>
-                        <span className='fw-bold'> Cjdns</span>
-                        <span className='float-end'>{nodeStore.networks.cjdns ? 'Yes' : 'No'}</span>
-                     </li>
-                  </ul>
-               </Card>
-               <Card title="Blockchain" className="col-12 col-lg-4 h-100 mb-3">
-                  <ul className="list-unstyled lh-lg">
-                     <li>
-                        <i className="bi bi-copy"></i>
-                        <span className="fw-bold"> Chain</span>
-                        <span className="float-end">{capitalizeFirst(blockchainStore.chain)}</span>
-                     </li>
-                     <li>
-                        <i className="bi bi-hdd"></i>
-                        <span className="fw-bold"> Size</span>
-                        <span className="float-end">{formatBytes(blockchainStore.size)}</span>
-                     </li>
-                     <li>
-                        <i className="bi bi-cpu"></i>
-                        <span className="fw-bold"> Difficulty</span>
-                        <span className="float-end">{compactNumber(blockchainStore.difficulty)}</span>
-                     </li>
-                     <li>
-                        <i className="bi bi-gear"></i>
-                        <span className="fw-bold"> Hashrate</span>
-                        <span className="float-end">{formatHashPerSecond(blockchainStore.hashRate)}</span>
-                     </li>
-                  </ul>
-               </Card>
-               <Card title="Top Peer Clients" className="col-12 col-lg-4 h-100 mb-3">
-                  <TopPeerClients/>
-               </Card>
-            </div>
+      <>
+         <Header />
+         <br />
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 m-3">
+            <StatsCard title="Node" statsList={nodeStats}/>
+            <StatsCard title="Blockchain" statsList={blockchainStats} />
+            <StatsCard title="Network" statsList={networkStats} />
          </div>
-      </div>
+         d
+      </>
    );
 };
 
