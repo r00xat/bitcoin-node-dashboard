@@ -3,7 +3,6 @@ import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import Logo from '@/icons/btc.svg';
 import './NavBar.scss'
-import { BiRotateLeft } from 'react-icons/bi';
 
 export default function NavBar() {
    const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +15,10 @@ export default function NavBar() {
       {
          title: 'Peers',
          path: '/peers'
+      }, 
+      {
+         title: 'Mempool',
+         path: '/mempool'
       }
    ];
 
