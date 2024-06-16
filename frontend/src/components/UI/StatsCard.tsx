@@ -1,3 +1,4 @@
+import clsx from "clsx";
 
 export type StatsCardProps = {
    title: string;
@@ -60,7 +61,7 @@ export default function StatsCard({ title, statsList, className }: StatsCardProp
    }
 
    return (
-      <div className={className + " bg-white rounded-md p-5"}>
+      <div className={clsx(className, "bg-white rounded-md p-5")}>
          <h1 className="text-2xl font-semibold text-center mb-2">
             {title}
          </h1>

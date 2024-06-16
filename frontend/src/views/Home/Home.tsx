@@ -125,7 +125,7 @@ const Home = () => {
             <StatsCard title="Node" statsList={nodeStats}/>
             <StatsCard title="Blockchain" statsList={blockchainStats} />
             <StatsCard title="Network" statsList={networkStats} />
-            <div className="col-span-2 bg-white rounded-md p-5">
+            <div className="col-span-1 md:col-span-2 bg-white rounded-md p-5">
                <TopClientsChart />
             </div>
          </div>

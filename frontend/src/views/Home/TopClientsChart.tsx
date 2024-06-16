@@ -96,9 +96,9 @@ export default function TopClientsChart() {
    }, [peerStore.peers]);
 
    return (
-      <div className='grid grid-cols-2'>
+      <div className='grid grid-cols-1 md:grid-cols-2'>
          <div ref={chartRef} style={{ height: '300px' }} />
-         <ul>
+         <ul className="pt-6 md:pt-0">
             {
                Array.from(mostCommonClients).map(([client, count], index) => {
                   const total = peerStore.peers.length;
@@ -107,7 +107,7 @@ export default function TopClientsChart() {
                      <li key={client} className={clsx("flex justify-between items-center h-[10%]", {
                         'bg-gray-200': index % 2 === 0
                      })}>
-                        <span className="flex items-center">
+                        <span className="flex items-center ps-1">
                            <FaSquare style={{ color: colors[index] }} />
                            {` ${index + 1}. ${client}`}
                         </span>
