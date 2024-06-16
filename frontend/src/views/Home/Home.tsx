@@ -15,9 +15,9 @@ import {
 import { useNodeStore } from '@/store/nodeStore';
 import { useBlockchainStore } from '@/store/blockchainStore';
 
-import './Home.scss';
 import Header from './Header';
 import StatsCard, { StatsList } from '@/components/UI/StatsCard';
+import TopClientsChart from './TopClientsChart';
 
 const Home = () => {
    const nodeStore = useNodeStore();
@@ -125,6 +125,9 @@ const Home = () => {
             <StatsCard title="Node" statsList={nodeStats}/>
             <StatsCard title="Blockchain" statsList={blockchainStats} />
             <StatsCard title="Network" statsList={networkStats} />
+            <div className="col-span-2 bg-white rounded-md p-5">
+               <TopClientsChart />
+            </div>
          </div>
          d
       </>
