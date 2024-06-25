@@ -3,13 +3,10 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import history from 'connect-history-api-fallback';
 
-import ping from './routes/ping';
-import bitcoin from './routes/bitcoin';
+import ping from './routes/ping.js';
+import bitcoin from './routes/bitcoin.js';
 
 class Server {
-   app: express.Application;
-   port: number;
-
    constructor() {
       this.app = express();
       this.port = 4000;
@@ -36,6 +33,10 @@ class Server {
       this.app.use('/ping', ping);
 
       this.app.use('/bitcoin', bitcoin);
+
+      this.app.get('/test', (req, res) => {
+         throw new Error('Test error');
+      });
    }
 
    listen() {

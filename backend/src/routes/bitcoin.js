@@ -6,6 +6,7 @@ const client = new bitcoinRPC({
    port: process.env.BTC_PORT,
    username: process.env.BTC_USERNAME,
    password: process.env.BTC_PASSWORD,
+   timeout: 2000,
 });
 
 const router = express.Router();
@@ -19,8 +20,14 @@ router.get('/main', async function (req, res, next) {
       { method: 'getblockcount', parameters: [] },
    ];
 
-   const [netTotals, networkInfo, listBanned, mempoolInfo, blockCount] =
-      await client.command(batch);
+   let netTotals, networkInfo, listBanned, mempoolInfo, blockCount;
+
+   try {
+      [netTotals, networkInfo, listBanned, mempoolInfo, blockCount] =
+         await client.command(batch);
+   } catch (error) {
+      return next(error);
+   }
 
    res.json({
       sent: netTotals.totalbytessent,
@@ -38,7 +45,13 @@ router.get('/node', async function (req, res, next) {
       { method: 'getnetworkinfo', parameters: [] },
    ];
 
-   const [uptime, networkInfo] = await client.command(batch);
+   let uptime, networkInfo;
+
+   try {
+      [uptime, networkInfo] = await client.command(batch);
+   } catch (error) {
+      return next(error);
+   }
 
    const networks = {
       ipv4: networkInfo.networks.find(network => network.name === 'ipv4'),
@@ -112,7 +125,13 @@ router.get('/blockchain', async function (req, res, next) {
       { method: 'getmininginfo', parameters: [] },
    ];
 
-   const [blockchainInfo, miningInfo] = await client.command(batch);
+   let blockchainInfo, miningInfo;
+
+   try {
+      [blockchainInfo, miningInfo] = await client.command(batch);
+   } catch (error) {
+      return next(error);
+   }
 
    res.json({
       chain: miningInfo.chain,
@@ -120,11 +139,15 @@ router.get('/blockchain', async function (req, res, next) {
       difficulty: miningInfo.difficulty,
       hashRate: miningInfo.networkhashps,
    })
-
 });
 
 router.get('/peers', async function (req, res, next) {
-   const peers = await client.getPeerInfo();
+   let peers;
+   try {
+      peers = await client.getPeerInfo();
+   } catch (error) {
+      return next(error);
+   }
 
    const returnPeers = peers.map(peer => {
       return {
@@ -141,6 +164,25 @@ router.get('/peers', async function (req, res, next) {
    });
 
    res.json(returnPeers);
+});
+
+
+router.use((error, req, res, next) => {
+   console.error("error.message: ", error.message);
+   console.error("error.code: ", error.code);
+
+   console.error("error: ", error);
+
+   switch (error.code) {
+      case 'ECONNREFUSED':
+         return res.status(504).json({ error: 'Connection refused by bitcoin host' });
+      case 'ETIMEDOUT':
+         return res.status(504).json({ error: 'Request Timeout' });
+      case 401:
+         return res.status(504).json({ error: 'Invalid RPC credentials' });
+      default:
+         return res.status(504).json({ error: 'Internal Server Error' });
+   }
 });
 
 export default router;
