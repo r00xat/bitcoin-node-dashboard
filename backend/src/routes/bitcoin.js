@@ -6,7 +6,7 @@ const client = new bitcoinRPC({
    port: process.env.BTC_PORT,
    username: process.env.BTC_USERNAME,
    password: process.env.BTC_PASSWORD,
-   timeout: 2000,
+   timeout: 20000,
 });
 
 const router = express.Router();
@@ -15,16 +15,13 @@ router.get('/main', async function (req, res, next) {
    const batch = [
       { method: 'getnettotals', parameters: [] },
       { method: 'getnetworkinfo', parameters: [] },
-      { method: 'listbanned', parameters: [] },
       { method: 'getmempoolinfo', parameters: [] },
-      { method: 'getblockcount', parameters: [] },
    ];
 
-   let netTotals, networkInfo, listBanned, mempoolInfo, blockCount;
+   let netTotals, networkInfo, mempoolInfo;
 
    try {
-      [netTotals, networkInfo, listBanned, mempoolInfo, blockCount] =
-         await client.command(batch);
+      [netTotals, networkInfo, mempoolInfo] = await client.command(batch);
    } catch (error) {
       return next(error);
    }
@@ -33,9 +30,7 @@ router.get('/main', async function (req, res, next) {
       sent: netTotals.totalbytessent,
       received: netTotals.totalbytesrecv,
       connections: networkInfo.connections,
-      bannedPeersCount: listBanned.length,
       mempool: mempoolInfo.size,
-      blocks: blockCount,
    });
 });
 
@@ -49,6 +44,53 @@ router.get('/node', async function (req, res, next) {
 
    try {
       [uptime, networkInfo] = await client.command(batch);
+   } catch (error) {
+      return next(error);
+   }
+
+   res.json({
+      client: networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
+      protocolVersion: networkInfo.protocolversion,
+      port: process.env.BTC_PORT,
+      services: networkInfo.localservicesnames,
+      uptime,
+   });
+});
+
+router.get('/blockchain', async function (req, res, next) {
+
+   const batch = [
+      { method: 'getblockchaininfo', parameters: [] },
+      { method: 'getmininginfo', parameters: [] },
+   ];
+
+   let blockchainInfo, miningInfo;
+
+   try {
+      [blockchainInfo, miningInfo] = await client.command(batch);
+   } catch (error) {
+      return next(error);
+   }
+
+   res.json({
+      chain: miningInfo.chain,
+      size: blockchainInfo.size_on_disk,
+      difficulty: miningInfo.difficulty,
+      hashRate: miningInfo.networkhashps,
+      lastBlock: blockchainInfo.blocks,
+      lastBlockTime: blockchainInfo.time
+   })
+});
+
+router.get('/network', async function (req, res, next) {
+   const batch = [
+      { method: 'getnettotals', parameters: [] },
+      { method: 'getnetworkinfo', parameters: [] },
+   ];
+
+   let getnettotals, networkInfo;
+   try {
+      [getnettotals, networkInfo] = await client.command(batch);
    } catch (error) {
       return next(error);
    }
@@ -88,11 +130,11 @@ router.get('/node', async function (req, res, next) {
    });
 
    res.json({
-      client: networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
-      protocolVersion: networkInfo.protocolversion,
-      port: process.env.BTC_PORT,
-      services: networkInfo.localservicesnames,
-      uptime,
+      totalbytessent: getnettotals.totalbytessent,
+      uploadtarget: {
+         target: getnettotals.uploadtarget.target,
+         target_reached: getnettotals.uploadtarget.target_reached,
+      },
       networks: {
          ipv4: {
             available: networks.ipv4 ? networks.ipv4.reachable : false,
@@ -114,31 +156,8 @@ router.get('/node', async function (req, res, next) {
             available: networks.cjdns ? networks.cjdns.reachable : false,
             address: addresses.cjdns,
          }
-      },
+      }
    });
-});
-
-router.get('/blockchain', async function (req, res, next) {
-
-   const batch = [
-      { method: 'getblockchaininfo', parameters: [] },
-      { method: 'getmininginfo', parameters: [] },
-   ];
-
-   let blockchainInfo, miningInfo;
-
-   try {
-      [blockchainInfo, miningInfo] = await client.command(batch);
-   } catch (error) {
-      return next(error);
-   }
-
-   res.json({
-      chain: miningInfo.chain,
-      size: blockchainInfo.size_on_disk,
-      difficulty: miningInfo.difficulty,
-      hashRate: miningInfo.networkhashps,
-   })
 });
 
 router.get('/peers', async function (req, res, next) {

@@ -25,6 +25,11 @@ export function formatSeconds(seconds: number): string {
    return `${seconds.toFixed(0)} ${units[index]}`;
 }
 
+export function formatUnixToTimeAgo(unix: number): string {
+   const seconds = Math.floor((new Date().getTime() - unix * 1000) / 1000);
+   return formatSeconds(seconds) + ' ago';
+}
+
 export function capitalizeFirst(string: string): string {
    return string.charAt(0).toUpperCase() + string.slice(1);
 }

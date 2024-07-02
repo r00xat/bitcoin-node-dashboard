@@ -7,6 +7,8 @@ type BlockchainStore = {
    size: number;
    difficulty: number;
    hashRate: number;
+   lastBlock: number;
+   lastBlockTime: number;
    fetch(): unknown;
 }
 
@@ -16,6 +18,8 @@ export const useBlockchainStore = create<BlockchainStore>()(
       size: 0,
       difficulty: 0,
       hashRate: 0,
+      lastBlock: 0,
+      lastBlockTime: 0,
       fetch: async () => {
          await api.get('/bitcoin/blockchain')
             .then(({ data }) => {
@@ -24,6 +28,8 @@ export const useBlockchainStore = create<BlockchainStore>()(
                   size: data.size,
                   difficulty: data.difficulty,
                   hashRate: data.hashRate,
+                  lastBlock: data.lastBlock,
+                  lastBlockTime: data.lastBlockTime
                },
                   false,
                   'fetchBlockchainStore'

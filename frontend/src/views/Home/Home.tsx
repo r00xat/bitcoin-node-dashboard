@@ -1,5 +1,14 @@
 import { useEffect } from 'react';
-import { formatLargeNumber, formatBytes, formatSeconds, capitalizeFirst, formatHashPerSecond, compactNumber } from '@/utils/utils';
+import {
+   formatLargeNumber,
+   formatBytes,
+   formatSeconds,
+   formatUnixToTimeAgo,
+   capitalizeFirst,
+   formatHashPerSecond,
+   compactNumber
+} from '@/utils/utils';
+
 import {
    FaIdCard,
    FaArrowRightArrowLeft,
@@ -14,6 +23,7 @@ import {
 } from 'react-icons/fa6';
 import { useNodeStore } from '@/store/nodeStore';
 import { useBlockchainStore } from '@/store/blockchainStore';
+import { useNetworkStore } from '@/store/networkStore';
 
 import Header from './Header';
 import StatsCard, { StatsList } from '@/components/UI/StatsCard';
@@ -22,10 +32,12 @@ import TopClientsChart from './TopClientsChart';
 const Home = () => {
    const nodeStore = useNodeStore();
    const blockchainStore = useBlockchainStore();
+   const networkStore = useNetworkStore();
 
    useEffect(() => {
       nodeStore.fetch();
       blockchainStore.fetch();
+      networkStore.fetch();
    }, []);
 
    const nodeStats: StatsList[] = [
@@ -80,12 +92,12 @@ const Home = () => {
       {
          icon: <FaCube />,
          name: 'Last Block',
-         value: formatLargeNumber(800000)
+         value: formatLargeNumber(blockchainStore.lastBlock)
       },
       {
          icon: <FaClock />,
          name: 'Last Block Time',
-         value: formatSeconds(nodeStore.uptime) + ' ago'
+         value: formatUnixToTimeAgo(blockchainStore.lastBlockTime)
       }
    ];
 
@@ -93,36 +105,35 @@ const Home = () => {
       {
          icon: null,
          name: 'IPv4',
-         value: true
+         value: networkStore.networks.ipv4.available
       },
       {
          icon: null,
          name: 'IPv6',
-         value: true
+         value: networkStore.networks.ipv6.available
       },
       {
          icon: null,
          name: 'Tor',
-         value: false
+         value: networkStore.networks.tor.available
       },
       {
          icon: null,
          name: 'Traffic Limit Set',
-         value: false
+         value: networkStore.uploadTarget.target > 0
       },
       {
          icon: null,
          name: 'Traffic Limited',
-         value: false
+         value: networkStore.uploadTarget.targetReached
       }
    ];
 
    return (
       <>
          <Header />
-         <br />
-         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 m-3">
-            <StatsCard title="Node" statsList={nodeStats}/>
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 m-3 mt-7">
+            <StatsCard title="Node" statsList={nodeStats} />
             <StatsCard title="Blockchain" statsList={blockchainStats} />
             <StatsCard title="Network" statsList={networkStats} />
             <div className="col-span-1 md:col-span-2 bg-white rounded-md p-5">
