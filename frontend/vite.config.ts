@@ -12,7 +12,7 @@ export default ({ mode }) => {
          },
       },
       server: {
-         port: 3000,
+         port: 1100,
          host: true,
       },
       plugins: [react()],

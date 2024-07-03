@@ -9,7 +9,7 @@ import bitcoin from './routes/bitcoin.js';
 class Server {
    constructor() {
       this.app = express();
-      this.port = 4000;
+      this.port = 1101;
       this.app.enable('trust proxy');
 
       this.middlewares();

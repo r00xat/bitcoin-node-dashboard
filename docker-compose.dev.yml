@@ -10,7 +10,7 @@ services:
          - ./frontend:/app
          - /app/node_modules/
       ports:
-         - '1100:3000'
+         - '1100:1100'
       environment:
          - VITE_BACKEND_URL=${VITE_BACKEND_URL}
 
@@ -25,4 +25,4 @@ services:
          - ./backend:/app
          - /app/node_modules/
       ports:
-         - '1101:4000'
+         - '1101:1101'

@@ -6,6 +6,7 @@
       "backend"
    ],
    "scripts": {
+      "dev": "cp .env frontend/.env && cp .env backend/.env && pnpm run -r dev",
       "dev:docker": "docker compose -f docker-compose.dev.yml up --build --force-recreate --no-deps",
       "build:dev:docker": "docker compose -f docker-compose.dev.yml build --no-cache",
       "prettier": "npx prettier --write ."
