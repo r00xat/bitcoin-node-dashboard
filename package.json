@@ -1,6 +1,5 @@
 {
    "name": "bitcoin-node-dashboard",
-   "version": "0.0.1",
    "author": "MontejoJorge",
    "workspaces": [
       "fronend",
