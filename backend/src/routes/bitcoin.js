@@ -5,49 +5,49 @@ const router = express.Router();
 
 router.get('/main', async function (req, res, next) {
 
-   const main = await bitcoinService.main()
+   const { netTotals, networkInfo, mempoolInfo } = await bitcoinService.main()
       .catch(error => {
          return next(error);
       });
 
    res.json({
-      sent: main.netTotals.totalbytessent,
-      received: main.netTotals.totalbytesrecv,
-      connections: main.networkInfo.connections,
-      mempool: main.mempoolInfo.size,
+      sent: netTotals.totalbytessent,
+      received: netTotals.totalbytesrecv,
+      connections: networkInfo.connections,
+      mempool: mempoolInfo.size,
    });
 });
 
 router.get('/node', async function (req, res, next) {
 
-   const node = await bitcoinService.node()
+   const { uptime, networkInfo } = await bitcoinService.node()
       .catch(error => {
          return next(error);
       });
 
    res.json({
-      client: node.networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
-      protocolVersion: node.networkInfo.protocolversion,
+      client: networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
+      protocolVersion: networkInfo.protocolversion,
       port: process.env.BTC_PORT,
-      services: node.networkInfo.localservicesnames,
-      uptime: node.uptime,
+      services: networkInfo.localservicesnames,
+      uptime,
    });
 });
 
 router.get('/blockchain', async function (req, res, next) {
 
-   const blockchain = await bitcoinService.blockchain()
+   const { blockchainInfo, miningInfo } = await bitcoinService.blockchain()
       .catch(error => {
          return next(error);
       });
 
    res.json({
-      chain: blockchain.miningInfo.chain,
-      size: blockchain.blockchainInfo.size_on_disk,
-      difficulty: blockchain.miningInfo.difficulty,
-      hashRate: blockchain.miningInfo.networkhashps,
-      lastBlock: blockchain.blockchainInfo.blocks,
-      lastBlockTime: blockchain.blockchainInfo.time
+      chain: miningInfo.chain,
+      size: blockchainInfo.size_on_disk,
+      difficulty: miningInfo.difficulty,
+      hashRate: miningInfo.networkhashps,
+      lastBlock: blockchainInfo.blocks,
+      lastBlockTime: blockchainInfo.time
    })
 });
 
