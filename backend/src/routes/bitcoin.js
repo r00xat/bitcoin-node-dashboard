@@ -1,99 +1,61 @@
 import express from 'express';
-import bitcoinRPC from 'bitcoin-core';
-
-const client = new bitcoinRPC({
-   host: process.env.BTC_HOST,
-   port: process.env.BTC_PORT,
-   username: process.env.BTC_USERNAME,
-   password: process.env.BTC_PASSWORD,
-   timeout: 20000,
-});
+import bitcoinService from '../services/bitcoin.js';
 
 const router = express.Router();
 
 router.get('/main', async function (req, res, next) {
-   const batch = [
-      { method: 'getnettotals', parameters: [] },
-      { method: 'getnetworkinfo', parameters: [] },
-      { method: 'getmempoolinfo', parameters: [] },
-   ];
 
-   let netTotals, networkInfo, mempoolInfo;
-
-   try {
-      [netTotals, networkInfo, mempoolInfo] = await client.command(batch);
-   } catch (error) {
-      return next(error);
-   }
+   const main = await bitcoinService.main()
+      .catch(error => {
+         return next(error);
+      });
 
    res.json({
-      sent: netTotals.totalbytessent,
-      received: netTotals.totalbytesrecv,
-      connections: networkInfo.connections,
-      mempool: mempoolInfo.size,
+      sent: main.netTotals.totalbytessent,
+      received: main.netTotals.totalbytesrecv,
+      connections: main.networkInfo.connections,
+      mempool: main.mempoolInfo.size,
    });
 });
 
 router.get('/node', async function (req, res, next) {
-   const batch = [
-      { method: 'uptime', parameters: [] },
-      { method: 'getnetworkinfo', parameters: [] },
-   ];
 
-   let uptime, networkInfo;
-
-   try {
-      [uptime, networkInfo] = await client.command(batch);
-   } catch (error) {
-      return next(error);
-   }
+   const node = await bitcoinService.node()
+      .catch(error => {
+         return next(error);
+      });
 
    res.json({
-      client: networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
-      protocolVersion: networkInfo.protocolversion,
+      client: node.networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
+      protocolVersion: node.networkInfo.protocolversion,
       port: process.env.BTC_PORT,
-      services: networkInfo.localservicesnames,
-      uptime,
+      services: node.networkInfo.localservicesnames,
+      uptime: node.uptime,
    });
 });
 
 router.get('/blockchain', async function (req, res, next) {
 
-   const batch = [
-      { method: 'getblockchaininfo', parameters: [] },
-      { method: 'getmininginfo', parameters: [] },
-   ];
-
-   let blockchainInfo, miningInfo;
-
-   try {
-      [blockchainInfo, miningInfo] = await client.command(batch);
-   } catch (error) {
-      return next(error);
-   }
+   const blockchain = await bitcoinService.blockchain()
+      .catch(error => {
+         return next(error);
+      });
 
    res.json({
-      chain: miningInfo.chain,
-      size: blockchainInfo.size_on_disk,
-      difficulty: miningInfo.difficulty,
-      hashRate: miningInfo.networkhashps,
-      lastBlock: blockchainInfo.blocks,
-      lastBlockTime: blockchainInfo.time
+      chain: blockchain.miningInfo.chain,
+      size: blockchain.blockchainInfo.size_on_disk,
+      difficulty: blockchain.miningInfo.difficulty,
+      hashRate: blockchain.miningInfo.networkhashps,
+      lastBlock: blockchain.blockchainInfo.blocks,
+      lastBlockTime: blockchain.blockchainInfo.time
    })
 });
 
 router.get('/network', async function (req, res, next) {
-   const batch = [
-      { method: 'getnettotals', parameters: [] },
-      { method: 'getnetworkinfo', parameters: [] },
-   ];
-
-   let getnettotals, networkInfo;
-   try {
-      [getnettotals, networkInfo] = await client.command(batch);
-   } catch (error) {
-      return next(error);
-   }
+   const { netTotals, networkInfo } = await bitcoinService.network()
+      .catch(error => {
+         return next(error);
+      });
 
    const networks = {
       ipv4: networkInfo.networks.find(network => network.name === 'ipv4'),
@@ -130,10 +92,10 @@ router.get('/network', async function (req, res, next) {
    });
 
    res.json({
-      totalbytessent: getnettotals.totalbytessent,
+      totalbytessent: netTotals.totalbytessent,
       uploadtarget: {
-         target: getnettotals.uploadtarget.target,
-         target_reached: getnettotals.uploadtarget.target_reached,
+         target: netTotals.uploadtarget.target,
+         target_reached: netTotals.uploadtarget.target_reached,
       },
       networks: {
          ipv4: {
@@ -161,12 +123,11 @@ router.get('/network', async function (req, res, next) {
 });
 
 router.get('/peers', async function (req, res, next) {
-   let peers;
-   try {
-      peers = await client.getPeerInfo();
-   } catch (error) {
-      return next(error);
-   }
+   
+   const peers = await bitcoinService.peers()
+      .catch(error => {
+         return next(error);
+      });
 
    const returnPeers = peers.map(peer => {
       return {

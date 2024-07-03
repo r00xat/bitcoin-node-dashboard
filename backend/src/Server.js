@@ -33,10 +33,6 @@ class Server {
       this.app.use('/ping', ping);
 
       this.app.use('/bitcoin', bitcoin);
-
-      this.app.get('/test', (req, res) => {
-         throw new Error('Test error');
-      });
    }
 
    listen() {
