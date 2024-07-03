@@ -140,7 +140,6 @@ const Home = () => {
                <TopClientsChart />
             </div>
          </div>
-         d
       </>
    );
 };

@@ -5,8 +5,8 @@ import React from 'react';
 const App: React.FC = () => {
 
    return (
-      <div className="bg-gray-100">
-         <NavBar/>
+      <div className="bg-gray-100 min-h-full pb-5">
+         <NavBar />
          <AppRouter />
       </div>
    );
