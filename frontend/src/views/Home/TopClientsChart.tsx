@@ -29,7 +29,7 @@ echarts.use([
 export default function TopClientsChart() {
 
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-   const [chart, setChart] = useState<echarts.ECharts>();
+   const [_chart, setChart] = useState<echarts.ECharts>();
    const chartRef = useRef<HTMLDivElement>(null);
    const [mostCommonClients, setMostCommonClients] = useState<Map<string, number>>(new Map());
 
@@ -144,7 +144,7 @@ const getMostCommonClient = (peers: Peer[]) => {
    const sortedClients = Array.from(clients.entries()).sort((a, b) => b[1] - a[1]);
    const mostCommonClients = new Map(sortedClients.slice(0, 9));
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-   const other = sortedClients.slice(9).reduce((acc, [client, count]) => acc + count, 0);
+   const other = sortedClients.slice(9).reduce((acc, [_client, count]) => acc + count, 0);
    mostCommonClients.set('Other', other);
    return mostCommonClients;
 }

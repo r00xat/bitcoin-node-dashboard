@@ -1,0 +1,25 @@
+services:
+   frontend:
+      container_name: bnd-frontend
+      build:
+         context: ./frontend
+         dockerfile: Dockerfile
+      ports:
+         - '1100:80'
+      environment:
+        - VITE_BACKEND_URL=${VITE_BACKEND_URL}
+
+   backend:
+      container_name: bnd-backend
+      build:
+         context: ./backend
+         dockerfile: Dockerfile
+      ports:
+         - '1101:1101'
+      env_file:
+         - ./.env
+      environment:
+         BTC_HOST: ${BTC_HOST}
+         BTC_PORT: ${BTC_PORT}
+         BTC_USERNAME: ${BTC_USERNAME}
+         BTC_PASSWORD: ${BTC_PASSWORD}
