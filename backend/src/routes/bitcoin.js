@@ -4,154 +4,151 @@ import bitcoinService from '../services/bitcoin.js';
 const router = express.Router();
 
 router.get('/main', async function (req, res, next) {
+   try {
+      const { netTotals, networkInfo, mempoolInfo } = await bitcoinService.main();
 
-   const { netTotals, networkInfo, mempoolInfo } = await bitcoinService.main()
-      .catch(error => {
-         return next(error);
+      res.json({
+         sent: netTotals.totalbytessent,
+         received: netTotals.totalbytesrecv,
+         connections: networkInfo.connections,
+         mempool: mempoolInfo.size,
       });
-
-   res.json({
-      sent: netTotals.totalbytessent,
-      received: netTotals.totalbytesrecv,
-      connections: networkInfo.connections,
-      mempool: mempoolInfo.size,
-   });
+   } catch (error) {
+      return next(error);
+   }
 });
 
 router.get('/node', async function (req, res, next) {
+   try {
+      const { uptime, networkInfo } = await bitcoinService.node();
 
-   const { uptime, networkInfo } = await bitcoinService.node()
-      .catch(error => {
-         return next(error);
+      res.json({
+         client: networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
+         protocolVersion: networkInfo.protocolversion,
+         port: process.env.BTC_PORT,
+         services: networkInfo.localservicesnames,
+         uptime,
       });
-
-   res.json({
-      client: networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
-      protocolVersion: networkInfo.protocolversion,
-      port: process.env.BTC_PORT,
-      services: networkInfo.localservicesnames,
-      uptime,
-   });
+   } catch (error) {
+      return next(error);
+   }
 });
 
 router.get('/blockchain', async function (req, res, next) {
+   try {
+      const { blockchainInfo, miningInfo } = await bitcoinService.blockchain();
 
-   const { blockchainInfo, miningInfo } = await bitcoinService.blockchain()
-      .catch(error => {
-         return next(error);
+      res.json({
+         chain: miningInfo.chain,
+         size: blockchainInfo.size_on_disk,
+         difficulty: miningInfo.difficulty,
+         hashRate: miningInfo.networkhashps,
+         lastBlock: blockchainInfo.blocks,
+         lastBlockTime: blockchainInfo.time
       });
-
-   res.json({
-      chain: miningInfo.chain,
-      size: blockchainInfo.size_on_disk,
-      difficulty: miningInfo.difficulty,
-      hashRate: miningInfo.networkhashps,
-      lastBlock: blockchainInfo.blocks,
-      lastBlockTime: blockchainInfo.time
-   })
+   } catch (error) {
+      return next(error);
+   }
 });
 
 router.get('/network', async function (req, res, next) {
-   const { netTotals, networkInfo } = await bitcoinService.network()
-      .catch(error => {
-         return next(error);
-      });
+   try {
+      const { netTotals, networkInfo } = await bitcoinService.network();
 
-   const networks = {
-      ipv4: networkInfo.networks.find(network => network.name === 'ipv4'),
-      ipv6: networkInfo.networks.find(network => network.name === 'ipv6'),
-      onion: networkInfo.networks.find(network => network.name === 'onion'),
-      i2p: networkInfo.networks.find(network => network.name === 'i2p'),
-      cjdns: networkInfo.networks.find(network => network.name === 'cjdns'),
-   }
-
-   const addresses = {
-      ipv4: undefined,
-      ipv6: undefined,
-      tor: undefined,
-      i2p: undefined,
-      cjdns: undefined,
-   };
-
-   const ipv4Regex = '^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$';
-   const ipv6Regex = '(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))';
-   const torV2Regex = '^[0-9a-z]{16}\.onion$';
-   const torV3Regex = '^[0-9a-z]{56}\.onion$';
-   const i2pRegex = '*\.i2p$/';
-
-   networkInfo.localaddresses.forEach(addObj => {
-      if (addObj.address.match(ipv4Regex)) {
-         addresses.ipv4 = addObj.address;
-      } else if (addObj.address.match(ipv6Regex)) {
-         addresses.ipv6 = addObj.address;
-      } else if (addObj.address.match(torV2Regex) || addObj.address.match(torV3Regex)) {
-         addresses.tor = addObj.address;
-      } else if (addObj.address.match(i2pRegex)) {
-         addresses.i2p = addObj.address;
+      const networks = {
+         ipv4: networkInfo.networks.find(network => network.name === 'ipv4'),
+         ipv6: networkInfo.networks.find(network => network.name === 'ipv6'),
+         onion: networkInfo.networks.find(network => network.name === 'onion'),
+         i2p: networkInfo.networks.find(network => network.name === 'i2p'),
+         cjdns: networkInfo.networks.find(network => network.name === 'cjdns'),
       }
-   });
-
-   res.json({
-      totalbytessent: netTotals.totalbytessent,
-      uploadtarget: {
-         target: netTotals.uploadtarget.target,
-         target_reached: netTotals.uploadtarget.target_reached,
-      },
-      networks: {
-         ipv4: {
-            available: networks.ipv4 ? networks.ipv4.reachable : false,
-            address: addresses.ipv4,
-         },
-         ipv6: {
-            available: networks.ipv6 ? networks.ipv6.reachable : false,
-            address: addresses.ipv6,
-         },
-         tor: {
-            available: networks.onion ? networks.onion.reachable : false,
-            address: addresses.tor,
-         },
-         i2p: {
-            available: networks.i2p ? networks.i2p.reachable : false,
-            address: addresses.i2p,
-         },
-         cjdns: {
-            available: networks.cjdns ? networks.cjdns.reachable : false,
-            address: addresses.cjdns,
+   
+      const addresses = {
+         ipv4: undefined,
+         ipv6: undefined,
+         tor: undefined,
+         i2p: undefined,
+         cjdns: undefined,
+      };
+   
+      const ipv4Regex = '^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$';
+      const ipv6Regex = '(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))';
+      const torV2Regex = '^[0-9a-z]{16}\.onion$';
+      const torV3Regex = '^[0-9a-z]{56}\.onion$';
+      const i2pRegex = '*\.i2p$/';
+   
+      networkInfo.localaddresses.forEach(addObj => {
+         if (addObj.address.match(ipv4Regex)) {
+            addresses.ipv4 = addObj.address;
+         } else if (addObj.address.match(ipv6Regex)) {
+            addresses.ipv6 = addObj.address;
+         } else if (addObj.address.match(torV2Regex) || addObj.address.match(torV3Regex)) {
+            addresses.tor = addObj.address;
+         } else if (addObj.address.match(i2pRegex)) {
+            addresses.i2p = addObj.address;
          }
-      }
-   });
+      });
+   
+      res.json({
+         totalbytessent: netTotals.totalbytessent,
+         uploadtarget: {
+            target: netTotals.uploadtarget.target,
+            target_reached: netTotals.uploadtarget.target_reached,
+         },
+         networks: {
+            ipv4: {
+               available: networks.ipv4 ? networks.ipv4.reachable : false,
+               address: addresses.ipv4,
+            },
+            ipv6: {
+               available: networks.ipv6 ? networks.ipv6.reachable : false,
+               address: addresses.ipv6,
+            },
+            tor: {
+               available: networks.onion ? networks.onion.reachable : false,
+               address: addresses.tor,
+            },
+            i2p: {
+               available: networks.i2p ? networks.i2p.reachable : false,
+               address: addresses.i2p,
+            },
+            cjdns: {
+               available: networks.cjdns ? networks.cjdns.reachable : false,
+               address: addresses.cjdns,
+            }
+         }
+      });
+   } catch (error) {
+      return next(error);
+   }
 });
 
 router.get('/peers', async function (req, res, next) {
-   
-   const peers = await bitcoinService.peers()
-      .catch(error => {
-         return next(error);
+   try {
+      const peers = await bitcoinService.peers();
+
+      const returnPeers = peers.map(peer => {
+         return {
+            id: peer.id,
+            address: peer.addr,
+            services: peer.servicesnames,
+            bytessent: peer.bytessent,
+            bytesrecv: peer.bytesrecv,
+            conectionTime: peer.conntime,
+            version: peer.version,
+            subversion: peer.subver.replace(/^\/+/, '').replace(/\/+$/, ''),
+            connection_type: peer.connection_type,
+         }
       });
-
-   const returnPeers = peers.map(peer => {
-      return {
-         id: peer.id,
-         address: peer.addr,
-         services: peer.servicesnames,
-         bytessent: peer.bytessent,
-         bytesrecv: peer.bytesrecv,
-         conectionTime: peer.conntime,
-         version: peer.version,
-         subversion: peer.subver.replace(/^\/+/, '').replace(/\/+$/, ''),
-         connection_type: peer.connection_type,
-      }
-   });
-
-   res.json(returnPeers);
+   
+      res.json(returnPeers);
+   } catch (error) {
+      return next(error);
+   }
 });
 
-
 router.use((error, req, res, next) => {
-   console.error("error.message: ", error.message);
-   console.error("error.code: ", error.code);
-
-   console.error("error: ", error);
+   console.error(error);
 
    switch (error.code) {
       case 'ECONNREFUSED':
