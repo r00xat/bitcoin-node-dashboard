@@ -8,6 +8,7 @@ type NodeStore = {
    port: number;
    services: string[];
    uptime: number;
+   loading: boolean;
    fetch(): unknown;
 }
 
@@ -18,7 +19,9 @@ export const useNodeStore = create<NodeStore>()(
       port: 0,
       services: [],
       uptime: 0,
+      loading: false,
       fetch: async () => {
+         set({loading: true});
          await api.get('/bitcoin/node')
             .then(({data}) => {
                set({
@@ -27,10 +30,14 @@ export const useNodeStore = create<NodeStore>()(
                      port: data.port,
                      services: data.services,
                      uptime: data.uptime,
+                     loading: false
                   },
                   false,
                   'fetchNodeStore'
                );
+            })
+            .catch(() => {
+               set({loading: false});
             });
       },
    }))

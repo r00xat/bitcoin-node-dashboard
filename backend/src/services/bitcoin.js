@@ -5,7 +5,7 @@ const client = new bitcoinRPC({
    port: process.env.BTC_PORT,
    username: process.env.BTC_USERNAME,
    password: process.env.BTC_PASSWORD,
-   timeout: 20000,
+   timeout: 5000,
 });
 
 async function main() {

@@ -3,6 +3,7 @@ import clsx from "clsx";
 export type StatsCardProps = {
    title: string;
    statsList: Array<StatsList>;
+   loading?: boolean;
    className?: string;
 };
 
@@ -12,10 +13,18 @@ export type StatsList = {
    value: string | number | Array<string> | boolean;
 }
 
-export default function StatsCard({ title, statsList, className }: StatsCardProps) {
+export default function StatsCard({ title, statsList, loading, className }: StatsCardProps) {
 
    const renderValue = (value: string | number | Array<string> | boolean) => {
-      if (typeof value === 'string' || typeof value === 'number') {
+      if (loading) {
+         return (
+            <div className="animate-pulse flex">
+               <div className="flex-1">
+                  <div className="h-5 w-20 bg-gray-200 rounded" />
+               </div>
+            </div>
+         );
+      } else if (typeof value === 'string' || typeof value === 'number') {
          return value;
       } else if (Array.isArray(value)) {
          return renderArray(value);

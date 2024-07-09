@@ -9,6 +9,7 @@ type BlockchainStore = {
    hashRate: number;
    lastBlock: number;
    lastBlockTime: number;
+   loading: boolean;
    fetch(): unknown;
 }
 
@@ -20,7 +21,9 @@ export const useBlockchainStore = create<BlockchainStore>()(
       hashRate: 0,
       lastBlock: 0,
       lastBlockTime: 0,
+      loading: false,
       fetch: async () => {
+         set({ loading: true });
          await api.get('/bitcoin/blockchain')
             .then(({ data }) => {
                set({
@@ -29,11 +32,15 @@ export const useBlockchainStore = create<BlockchainStore>()(
                   difficulty: data.difficulty,
                   hashRate: data.hashRate,
                   lastBlock: data.lastBlock,
-                  lastBlockTime: data.lastBlockTime
+                  lastBlockTime: data.lastBlockTime,
+                  loading: false
                },
                   false,
                   'fetchBlockchainStore'
                );
+            })
+            .catch(() => {
+               set({ loading: false });
             });
       },
    }))

@@ -133,9 +133,9 @@ const Home = () => {
       <>
          <Header />
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 m-3 mt-7">
-            <StatsCard title="Node" statsList={nodeStats} />
-            <StatsCard title="Blockchain" statsList={blockchainStats} />
-            <StatsCard title="Network" statsList={networkStats} />
+            <StatsCard title="Node" statsList={nodeStats} loading={nodeStore.loading} />
+            <StatsCard title="Blockchain" statsList={blockchainStats} loading={blockchainStore.loading} />
+            <StatsCard title="Network" statsList={networkStats} loading={networkStore.loading} />
             <div className="col-span-1 md:col-span-2 bg-white rounded-md p-5">
                <TopClientsChart />
             </div>

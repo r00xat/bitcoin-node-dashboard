@@ -20,6 +20,7 @@ type NetworkStore = {
       i2p: network;
       cjdns: network;
    },
+   loading: boolean;
    fetch(): unknown;
 }
 
@@ -42,7 +43,9 @@ export const useNetworkStore = create<NetworkStore>()(
          i2p: defaultNetwork,
          cjdns: defaultNetwork,
       },
+      loading: false,
       fetch: async () => {
+         set({ loading: true });
          await api.get('/bitcoin/network')
             .then(({data}) => {
                set({
@@ -58,9 +61,13 @@ export const useNetworkStore = create<NetworkStore>()(
                         i2p: data.networks.i2p,
                         cjdns: data.networks.cjdns,
                      },
+                     loading: false
                   },
                   false,
                );
+            })
+            .catch(() => {
+               set({ loading: false });
             });
       },
    }))
