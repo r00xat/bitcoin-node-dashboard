@@ -16,21 +16,28 @@ export type Peer = {
 
 type PeerStore = {
    peers: Peer[];
+   loading: boolean;
    fetch(): unknown;
 }
 
 export const usePeerStore = create<PeerStore>()(
    devtools((set) => ({
       peers: [],
+      loading: false,
       fetch: async () => {
+         set({ loading: true });
          await api.get('/bitcoin/peers')
             .then(({ data }) => {
                set({
-                  peers: data
+                  peers: data,
+                  loading: false
                },
                   false,
                   'fetchPeerStore'
                );
+            })
+            .catch(() => {
+               set({ loading: false });
             });
       },
    }))

@@ -13,6 +13,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import { Peer, usePeerStore } from '@/store/peerStore';
 import { FaSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
+import LoadingSpiner from '@/components/UI/LoadingSpiner';
 
 type EChartsOption = echarts.ComposeOption<
    TooltipComponentOption | LegendComponentOption | PieSeriesOption
@@ -31,7 +32,13 @@ export default function TopClientsChart() {
    // eslint-disable-next-line @typescript-eslint/no-unused-vars
    const [_chart, setChart] = useState<echarts.ECharts>();
    const chartRef = useRef<HTMLDivElement>(null);
-   const [mostCommonClients, setMostCommonClients] = useState<Map<string, number>>(new Map());
+
+   const emtpyClientMap = new Map<string, number>();
+   for (let i = 1; i <= 10; i++) {
+      emtpyClientMap.set('0', 0);
+   }
+
+   const [mostCommonClients, setMostCommonClients] = useState<Map<string, number>>(emtpyClientMap);
 
    const peerStore = usePeerStore();
 
@@ -96,30 +103,60 @@ export default function TopClientsChart() {
    }, [peerStore.peers]);
 
    return (
-      <div className='grid grid-cols-1 md:grid-cols-2'>
-         <div ref={chartRef} style={{ height: '300px' }} />
-         <ul className="pt-6 md:pt-0">
-            {
-               Array.from(mostCommonClients).map(([client, count], index) => {
-                  const total = peerStore.peers.length;
-                  const percentage = ((count / total) * 100).toFixed(0);
-                  return (
-                     <li key={client} className={clsx("flex justify-between items-center h-[10%]", {
-                        'bg-gray-200': index % 2 === 0
-                     })}>
-                        <span className="flex items-center ps-1">
-                           <FaSquare style={{ color: colors[index] }} />
-                           {` ${index + 1}. ${client}`}
-                        </span>
-                        <span>{percentage}%</span>
-                     </li>
-                  )
-               })
-            }
-         </ul>
-     </div>
+      <div className='grid'>
+         <div className='col-start-1 row-start-1 grid grid-cols-1 md:grid-cols-2'>
+            <div ref={chartRef} className={clsx(peerStore.loading && 'animate-pulse')} style={{ height: '300px' }} />
+            <ul className="pt-6 md:pt-0">
+               {peerStore.loading && loadingList()}
+               {!peerStore.loading && (
+                  Array.from(mostCommonClients).map(([client, count], index) => {
+                     const total = peerStore.peers.length;
+                     const percentage = ((count / total) * 100).toFixed(0);
+                     return (
+                        <li key={client} className={clsx("flex justify-between items-center h-[10%]", {
+                           'bg-gray-200': index % 2 === 0
+                        })}>
+                           <span className="flex items-center ps-1">
+                              <FaSquare style={{ color: colors[index] }} />
+                              {` ${index + 1}. ${client}`}
+                           </span>
+                           <span>{percentage}%</span>
+                        </li>
+                     )
+                  })
+               )}
+            </ul>
+         </div>
+         {peerStore.loading && <LoadingOverlay />}
+      </div>
    );
+}
 
+const loadingList = () => {
+   return (
+      Array.from({ length: 10 }).map((_, index) => {
+         return (
+            <li key={index} className={clsx("flex justify-between items-center h-[10%]")}>
+               <div className="animate-pulse flex w-full">
+                  <div className="flex-1">
+                     <div className="h-5 bg-slate-200 rounded" />
+                  </div>
+               </div>
+            </li>
+         )
+      })
+   );
+}
+
+const LoadingOverlay = () => {
+   return (
+      <div className=" bg-white bg-opacity-70 z-10 flex items-center justify-center col-start-1 row-start-1 border-dashed">
+         <div className="p-2 px-4 rounded-md flex items-center text-white bg-indigo-500">
+            <LoadingSpiner />
+            Loading...
+         </div>
+      </div>
+   );
 }
 
 const resizeObserver = new window.ResizeObserver((entries) => {
