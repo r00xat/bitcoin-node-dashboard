@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Card from "./UI/Card";
 
 export type StatsCardProps = {
    title: string;
@@ -70,11 +71,7 @@ export default function StatsCard({ title, statsList, loading, className }: Stat
    }
 
    return (
-      <div className={clsx(className, "bg-white rounded-md p-5")}>
-         <h1 className="text-2xl font-semibold text-center mb-2">
-            {title}
-         </h1>
-         <hr />
+      <Card title={title}>
          <ul className="mt-2">
             {
                statsList.map((stat, i) => {
@@ -96,7 +93,7 @@ export default function StatsCard({ title, statsList, loading, className }: Stat
                })
             }
          </ul>
-      </div>
+      </Card>
    );
 
 

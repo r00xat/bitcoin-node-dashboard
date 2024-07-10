@@ -26,7 +26,7 @@ import { useBlockchainStore } from '@/store/blockchainStore';
 import { useNetworkStore } from '@/store/networkStore';
 
 import Header from './Header';
-import StatsCard, { StatsList } from '@/components/UI/StatsCard';
+import StatsCard, { StatsList } from '@/components/StatsCard';
 import TopClientsChart from './TopClientsChart';
 
 const Home = () => {

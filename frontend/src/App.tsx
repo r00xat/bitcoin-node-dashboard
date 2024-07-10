@@ -1,4 +1,4 @@
-import NavBar from '@/components/UI/NavBar';
+import NavBar from '@/components/NavBar';
 import AppRouter from '@/router/AppRouter';
 import React from 'react';
 
