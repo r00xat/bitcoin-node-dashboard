@@ -28,6 +28,7 @@ import { useNetworkStore } from '@/store/networkStore';
 import Header from './Header';
 import StatsCard, { StatsList } from '@/components/StatsCard';
 import TopClientsChart from './TopClientsChart';
+import Card from '@/components/UI/Card';
 
 const Home = () => {
    const nodeStore = useNodeStore();
@@ -136,9 +137,9 @@ const Home = () => {
             <StatsCard title="Node" statsList={nodeStats} loading={nodeStore.loading} />
             <StatsCard title="Blockchain" statsList={blockchainStats} loading={blockchainStore.loading} />
             <StatsCard title="Network" statsList={networkStats} loading={networkStore.loading} />
-            <div className="col-span-1 md:col-span-2 bg-white rounded-md p-5">
+            <Card title="Top Peer Clients" className="col-span-1 md:col-span-2">
                <TopClientsChart />
-            </div>
+            </Card>
          </div>
       </>
    );

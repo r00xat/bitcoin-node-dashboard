@@ -71,7 +71,7 @@ export default function StatsCard({ title, statsList, loading, className }: Stat
 
    return (
       <Card title={title} className={className}>
-         <ul className="mt-2">
+         <ul>
             {
                statsList.map((stat, i) => {
                   return (
