@@ -1,9 +1,7 @@
 export enum RoutesEnum {
    HOME = '/',
    PEERS = '/peers',
-   BLOCKS = '/blocks',
    MEMPOOL = '/mempool',
-   WALLET = '/wallet',
    ABOUT = '/about',
 }
 
@@ -21,20 +19,8 @@ export const Routes: RouteType[] = [
       childrens: [],
    },
    {
-      name: 'Blocks',
-      path: RoutesEnum.BLOCKS,
-      navBar: true,
-      childrens: [],
-   },
-   {
       name: 'Mempool',
       path: RoutesEnum.MEMPOOL,
-      navBar: true,
-      childrens: [],
-   },
-   {
-      name: 'Wallet',
-      path: RoutesEnum.WALLET,
       navBar: true,
       childrens: [],
    },
