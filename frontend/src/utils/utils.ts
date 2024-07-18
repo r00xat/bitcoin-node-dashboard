@@ -25,6 +25,10 @@ export function formatSeconds(seconds: number): string {
    return `${seconds.toFixed(0)} ${units[index]}`;
 }
 
+export function formatMiliseconds(milliseconds: number): string {
+   return formatSeconds(milliseconds / 1000);
+}
+
 export function formatUnixToTimeAgo(unix: number): string {
    const seconds = Math.floor((new Date().getTime() - unix * 1000) / 1000);
    return formatSeconds(seconds) + ' ago';

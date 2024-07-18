@@ -138,6 +138,7 @@ router.get('/peers', async function (req, res, next) {
             version: peer.version,
             subversion: peer.subver.replace(/^\/+/, '').replace(/\/+$/, ''),
             connection_type: peer.connection_type,
+            inbound: peer.inbound,
          }
       });
    

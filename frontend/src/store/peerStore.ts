@@ -12,6 +12,7 @@ export type Peer = {
    version: number;
    subversion: string;
    connection_type: string;
+   inbound: boolean;
 }
 
 type PeerStore = {

@@ -1,40 +1,47 @@
 import Card from "@/components/UI/Card";
+import { usePeerStore } from "@/store/peerStore";
+import { formatBytes, formatUnixToTimeAgo } from "@/utils/utils";
+import { useEffect } from "react";
 
 function Peers() {
 
-   const peerExample = {
-      id: 1,
-      address: "192.168.1.1",
-      services: ["NODE_NETWORK", "NODE_BLOOM", "NODE_WITNESS"],
-      age: "2d",
-      client: "electrs 0.10.2",
-      traffic: "1.2 GB",
-      inbound: true
-   }
+   const peerStore = usePeerStore();
+
+   useEffect(() => {
+      peerStore.fetch();
+   }, []);
 
    return (
       <div className="m-3 mt-7">
-         <Card title="Connected Peers">
-            <table className="border-collapse">
-               <thead>
+         <Card>
+            <table className="border-collapse table-auto w-full">
+               <thead className="bg-gray-200 rounded-2xl">
                   <tr>
+                     <th className="py-2">Id</th>
                      <th>Address</th>
+                     <th>Inbound</th>
                      <th>Services</th>
                      <th>Age</th>
                      <th>Client</th>
-                     <th>Traffic</th>
-                     <th>Inbound</th>
+                     <th>Total Traffic</th>
+                     <th>Ban</th>
                   </tr>
                </thead>
                <tbody>
-                  <tr>
-                     <td>{peerExample.address}</td>
-                     <td>{peerExample.services.join(", ")}</td>
-                     <td>{peerExample.age}</td>
-                     <td>{peerExample.client}</td>
-                     <td>{peerExample.traffic}</td>
-                     <td>{peerExample.inbound ? "Yes" : "No"}</td>
-                  </tr>
+                  {peerStore.peers.map((peer, index) => (
+                     <tr key={index} className="border-b odd:bg-white even:bg-gray-100 hover:bg-gray-200 text-center">
+                        <td className="py-1.5">{peer.id}</td>
+                        <td>{peer.address}</td>
+                        <td>{peer.inbound ? "Yes" : "No"}</td>
+                        <td>{peer.services.join(", ")}</td>
+                        <td>{formatUnixToTimeAgo(peer.conectionTime)}</td>
+                        <td>{peer.subversion}</td>
+                        <td>{formatBytes(peer.bytessent + peer.bytesrecv)}</td>
+                        <td>
+                           <button className="px-2 border border-gray-400 text-red-600 rounded-lg">X</button>
+                        </td>
+                     </tr>
+                  ))}
                </tbody>
             </table>
          </Card>
