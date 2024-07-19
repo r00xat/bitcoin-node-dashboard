@@ -29,9 +29,13 @@ export function formatMiliseconds(milliseconds: number): string {
    return formatSeconds(milliseconds / 1000);
 }
 
-export function formatUnixToTimeAgo(unix: number): string {
+export function formatUnixTime(unix: number): string {
    const seconds = Math.floor((new Date().getTime() - unix * 1000) / 1000);
-   return formatSeconds(seconds) + ' ago';
+   return formatSeconds(seconds);
+}
+
+export function formatUnixToTimeAgo(unix: number): string {
+   return formatUnixTime(unix) + ' ago';
 }
 
 export function capitalizeFirst(string: string): string {
