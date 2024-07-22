@@ -19,6 +19,7 @@ type PeerStore = {
    peers: Peer[];
    loading: boolean;
    fetch(): unknown;
+   sortPeers(sortField: string, order: string): unknown;
 }
 
 export const usePeerStore = create<PeerStore>()(
@@ -41,5 +42,28 @@ export const usePeerStore = create<PeerStore>()(
                set({ loading: false });
             });
       },
+      sortPeers: (sortField: keyof Peer, order: string) => {
+         set((state) => ({
+            peers: state.peers.sort((a, b) => {
+               if (order === 'asc') {
+                  if (typeof a[sortField] === 'string' && typeof b[sortField] === 'string') {
+                     return a[sortField].localeCompare(b[sortField]);
+                  } else if (typeof a[sortField] === 'number' && typeof b[sortField] === 'number') {
+                     return a[sortField] - b[sortField];
+                  } else {
+                     return a[sortField] > b[sortField] ? 1 : -1;
+                  }
+               } else {
+                  if (typeof a[sortField] === 'string' && typeof b[sortField] === 'string') {
+                     return b[sortField].localeCompare(a[sortField]);
+                  } else if (typeof a[sortField] === 'number' && typeof b[sortField] === 'number') {
+                     return b[sortField] - a[sortField];
+                  } else {
+                     return a[sortField] < b[sortField] ? 1 : -1;
+                  }
+               }
+            })
+         }));
+      }
    }))
 );

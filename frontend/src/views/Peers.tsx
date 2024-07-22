@@ -1,15 +1,47 @@
 import Card from "@/components/UI/Card";
+import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { usePeerStore } from "@/store/peerStore";
 import { formatBytes, formatUnixTime } from "@/utils/utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import clsx from "clsx";
 
 function Peers() {
-
+   const [sortField, setSortField] = useState("Services");
+   const [order, setOrder] = useState("asc");
+   
    const peerStore = usePeerStore();
+
+   const tableFields = [{
+      name: 'Id',
+      key: 'id'
+   }, {
+      name: 'Address',
+      key: 'address'
+   }, {
+      name: 'Inbound',
+      key: 'inbound'
+   }, {
+      name: 'Services',
+      key: 'services'
+   }, {
+      name: 'Age',
+      key: 'conectionTime'
+   }, {
+      name: 'Client',
+      key: 'subversion'
+   }, {
+      name: 'Total Traffic',
+      key: 'bytessent'
+   }];
 
    useEffect(() => {
       peerStore.fetch();
    }, []);
+
+   useEffect(() => {
+      peerStore.sortPeers(sortField, order);
+      console.log('sortField:', sortField, 'order:', order);
+   }, [sortField, order]);
 
 
    function formatServices(services: string[]): React.ReactNode {
@@ -68,18 +100,33 @@ function Peers() {
                         <table className="rounded-sm border-collapse table-auto w-full ">
                            <thead className="bg-gray-200 rounded-2xl border-b">
                               <tr>
-                                 <th className="py-2">Id</th>
-                                 <th>Address</th>
-                                 <th>Inbound</th>
-                                 <th>Services</th>
-                                 <th>Age</th>
-                                 <th>Client</th>
-                                 <th>Total Traffic</th>
+                                 {tableFields.map((field) => (
+                                    <th
+                                       key={field.key}
+                                       className="py-2.5 cursor-pointer"
+                                       onClick={() => {
+                                          if (sortField === field.key) {
+                                             setOrder(order === 'asc' ? 'desc' : 'asc');
+                                          } else {
+                                             setSortField(field.key);
+                                             setOrder('asc');
+                                          }
+                                       }}
+                                    >
+                                       <div className="flex justify-center items-center">
+                                          {field.name}
+                                          <span className="ml-1 flex flex-col text-gray-400">
+                                             <TiArrowSortedUp className={clsx({ "text-black": (sortField === field.key && order != 'asc') })}/>
+                                             <TiArrowSortedDown className={clsx({ "text-black": (sortField === field.key && order == 'asc') })}/>
+                                          </span>
+                                       </div>
+                                    </th>
+                                 ))}
                               </tr>
                            </thead>
                            <tbody>
-                              {peerStore.peers.map((peer, index) => (
-                                 <tr key={index} className="border-b last:border-0 hover:bg-gray-100 text-center odd:bg-gray-50">
+                              {peerStore.peers.map((peer) => (
+                                 <tr key={peer.id} className="border-b last:border-0 hover:bg-gray-100 text-center odd:bg-gray-50">
                                     <td className="py-2.5">
                                        {peer.id}
                                     </td>
