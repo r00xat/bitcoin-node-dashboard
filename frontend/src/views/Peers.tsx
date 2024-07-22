@@ -4,6 +4,7 @@ import { usePeerStore } from "@/store/peerStore";
 import { formatBytes, formatUnixTime } from "@/utils/utils";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import React from "react";
 
 function Peers() {
    const [sortField, setSortField] = useState("Services");
@@ -31,7 +32,7 @@ function Peers() {
       key: 'subversion'
    }, {
       name: 'Total Traffic',
-      key: 'bytessent'
+      key: 'totalbytes'
    }];
 
    useEffect(() => {
@@ -40,7 +41,6 @@ function Peers() {
 
    useEffect(() => {
       peerStore.sortPeers(sortField, order);
-      console.log('sortField:', sortField, 'order:', order);
    }, [sortField, order]);
 
 
@@ -48,7 +48,7 @@ function Peers() {
       if (services.length === 0) {
          services = ['None'];
       }
-      return services.map((service) => {
+      return services.map((service, index) => {
          let tooltip = '';
          if (service === 'NETWORK') {
             service = 'N';
@@ -71,9 +71,8 @@ function Peers() {
          }
 
          return (
-            <>
+            <React.Fragment key={index}>
                <span
-                  key={service}
                   className="group relative m-0.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 cursor-pointer"
                >
                   {service}
@@ -85,7 +84,7 @@ function Peers() {
                      </span>)
                   }
                </span>
-            </>
+            </React.Fragment>
          );
       });
    }

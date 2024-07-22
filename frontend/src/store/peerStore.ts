@@ -8,6 +8,7 @@ export type Peer = {
    services: string[];
    bytessent: number;
    bytesrecv: number;
+   totalbytes: number;
    conectionTime: number;
    version: number;
    subversion: string;
@@ -19,7 +20,7 @@ type PeerStore = {
    peers: Peer[];
    loading: boolean;
    fetch(): unknown;
-   sortPeers(sortField: string, order: string): unknown;
+   sortPeers(sortField: unknown, order: string): unknown;
 }
 
 export const usePeerStore = create<PeerStore>()(
@@ -45,22 +46,12 @@ export const usePeerStore = create<PeerStore>()(
       sortPeers: (sortField: keyof Peer, order: string) => {
          set((state) => ({
             peers: state.peers.sort((a, b) => {
-               if (order === 'asc') {
-                  if (typeof a[sortField] === 'string' && typeof b[sortField] === 'string') {
-                     return a[sortField].localeCompare(b[sortField]);
-                  } else if (typeof a[sortField] === 'number' && typeof b[sortField] === 'number') {
-                     return a[sortField] - b[sortField];
-                  } else {
-                     return a[sortField] > b[sortField] ? 1 : -1;
-                  }
+               if (typeof a[sortField] === 'string' && typeof b[sortField] === 'string') {
+                  return order === 'asc' ? a[sortField].localeCompare(b[sortField]) : b[sortField].localeCompare(a[sortField]);
+               } else if (typeof a[sortField] === 'number' && typeof b[sortField] === 'number') {
+                  return order === 'asc' ? a[sortField] - b[sortField] : b[sortField] - a[sortField];
                } else {
-                  if (typeof a[sortField] === 'string' && typeof b[sortField] === 'string') {
-                     return b[sortField].localeCompare(a[sortField]);
-                  } else if (typeof a[sortField] === 'number' && typeof b[sortField] === 'number') {
-                     return b[sortField] - a[sortField];
-                  } else {
-                     return a[sortField] < b[sortField] ? 1 : -1;
-                  }
+                  return order === 'asc' ? a[sortField] > b[sortField] ? 1 : -1 : a[sortField] < b[sortField] ? 1 : -1;
                }
             })
          }));

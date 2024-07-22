@@ -134,6 +134,7 @@ router.get('/peers', async function (req, res, next) {
             services: peer.servicesnames,
             bytessent: peer.bytessent,
             bytesrecv: peer.bytesrecv,
+            totalbytes: peer.bytessent + peer.bytesrecv,
             conectionTime: peer.conntime,
             version: peer.version,
             subversion: peer.subver.replace(/^\/+/, '').replace(/\/+$/, ''),
