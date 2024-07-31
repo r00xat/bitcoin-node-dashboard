@@ -117,7 +117,7 @@ function Peers() {
     }
 
    return (
-      <Card className="m-3 mt-7">
+      <Card className="m-3 mt-7" title="Connected Peers">
          <div className="border rounded-lg overflow-hidden text-sm md:text-base">
             <table className="table-auto w-full">
                <thead className="bg-gray-200 rounded-2xl border-b">

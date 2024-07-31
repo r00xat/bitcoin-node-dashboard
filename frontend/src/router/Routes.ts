@@ -1,40 +1,20 @@
 export enum RoutesEnum {
    HOME = '/',
-   PEERS = '/peers',
-   MEMPOOL = '/mempool',
-   ABOUT = '/about',
+   PEERS = '/peers'
 }
 
 export const Routes: RouteType[] = [
    {
       name: 'Home',
-      path: RoutesEnum.HOME,
-      navBar: true,
-      childrens: [],
+      path: RoutesEnum.HOME
    },
    {
       name: 'Peers',
-      path: RoutesEnum.PEERS,
-      navBar: true,
-      childrens: [],
-   },
-   {
-      name: 'Mempool',
-      path: RoutesEnum.MEMPOOL,
-      navBar: true,
-      childrens: [],
-   },
-   {
-      name: 'About',
-      path: RoutesEnum.ABOUT,
-      navBar: true,
-      childrens: [],
-   },
+      path: RoutesEnum.PEERS
+   }
 ];
 
 type RouteType = {
    name: string;
    path: RoutesEnum;
-   navBar: boolean;
-   childrens: RouteType[];
-};
+}
