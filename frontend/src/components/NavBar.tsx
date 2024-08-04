@@ -15,10 +15,6 @@ export default function NavBar() {
       {
          title: 'Peers',
          path: '/peers'
-      }, 
-      {
-         title: 'Mempool',
-         path: '/mempool'
       }
    ];
 
