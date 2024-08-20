@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { useNavigate } from "react-router-dom";
+import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { useUserStore } from "@/store/userStore";
 import Logo from '@/icons/btc.svg';
 import './NavBar.scss'
@@ -20,10 +21,6 @@ export default function NavBar() {
       {
          title: 'Peers',
          path: '/peers'
-      },
-      {
-         title: 'Login',
-         path: '/login'
       }
    ];
 
@@ -91,7 +88,7 @@ export default function NavBar() {
                </div>
                <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex flex-shrink-0 items-center">
-                     <img className="h-8 w-auto me-1" src={Logo} style={{ transform: 'rotate(13.88deg)'}} />
+                     <img className="h-8 w-auto me-1" src={Logo} style={{ transform: 'rotate(13.88deg)' }} />
                      <div className="text-white text-base font-bold">
                         Bitcoin Node Dasboard
                      </div>
@@ -101,7 +98,14 @@ export default function NavBar() {
                         <Links />
                      </div>
                   </div>
-                  <button className="bg-white" onClick={() => handleLogout()}>Logout</button>
+               </div>
+               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                  <button 
+                     type="button" 
+                     onClick={() => handleLogout()} 
+                     className="relative rounded-full bg-gray-800 p-3 text-gray-400 hover:text-white focus:outline-none hover:bg-gray-700">
+                     <FaArrowRightFromBracket />
+                  </button>
                </div>
             </div>
          </div>
