@@ -1,7 +1,9 @@
 import NavBar from '@/components/NavBar';
-import AppRouter from '@/router/AppRouter';
-import React from 'react';
-import { useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, useNavigate, Outlet } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import {  } from 'react-router-dom'
+import { Home, Peers, Login } from '@/views';
+import { useUserStore } from "@/store/userStore";
 
 const App: React.FC = () => {
 
@@ -10,9 +12,28 @@ const App: React.FC = () => {
    return (
       <div className="bg-gray-100 min-h-full pb-5">
          { location.pathname !== "/login" && <NavBar /> }
-         <AppRouter />
+         <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route element={<ProtectedRoute />}>
+               <Route path="/" element={<Home />} />
+               <Route path="/peers" element={<Peers />} />
+            </Route>
+         </Routes>
       </div>
    );
 };
+
+const ProtectedRoute: React.FC = () => {
+   const userStore = useUserStore();
+   const navigate = useNavigate();
+
+   useEffect(() => {
+      if (!userStore.jwt) {
+         navigate('/login');
+      }
+   }, [userStore.jwt]);
+
+   return <Outlet />;
+}
 
 export default App;

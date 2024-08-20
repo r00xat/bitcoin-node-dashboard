@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
+import { useNavigate } from "react-router-dom";
+import { useUserStore } from "@/store/userStore";
 import Logo from '@/icons/btc.svg';
 import './NavBar.scss'
 
 export default function NavBar() {
    const [isOpen, setIsOpen] = useState(false);
+
+   const userStore = useUserStore();
+   const navigate = useNavigate();
 
    const links = [
       {
@@ -15,8 +20,17 @@ export default function NavBar() {
       {
          title: 'Peers',
          path: '/peers'
+      },
+      {
+         title: 'Login',
+         path: '/login'
       }
    ];
+
+   function handleLogout() {
+      userStore.logout();
+      navigate('/login');
+   }
 
    function Links() {
       const location = useLocation();
@@ -87,6 +101,7 @@ export default function NavBar() {
                         <Links />
                      </div>
                   </div>
+                  <button className="bg-white" onClick={() => handleLogout()}>Logout</button>
                </div>
             </div>
          </div>

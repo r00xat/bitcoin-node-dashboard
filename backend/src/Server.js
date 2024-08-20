@@ -5,6 +5,7 @@ import history from 'connect-history-api-fallback';
 
 import ping from './routes/ping.js';
 import bitcoin from './routes/bitcoin.js';
+import auth from './routes/auth.js';
 
 class Server {
    constructor() {
@@ -33,6 +34,8 @@ class Server {
       this.app.use('/ping', ping);
 
       this.app.use('/bitcoin', bitcoin);
+
+      this.app.use('/auth', auth);
    }
 
    listen() {

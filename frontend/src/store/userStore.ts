@@ -1,39 +1,49 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import Cookies from 'js-cookie';
 import api from './api/api';
 
 type UserStore = {
    isLogged: boolean;
    jwt: string | undefined;
    loading: boolean;
-   login(username: string, password: string): unknown;
+   login(password: string): Promise<void>;
    logout(): unknown;
 };
 
 export const useUserStore = create<UserStore>()(
    devtools((set) => ({
       isLogged: false,
-      jwt: undefined,
+      jwt: Cookies.get('token'),
       loading: false,
       login: async (password) => {
          set({ loading: true });
-         await api.post('/login', { password })
+         return api.post('auth/login', { password })
             .then(({data}) => {
                set({
                   isLogged: true,
                   jwt: data.jwt,
                   loading: false
-               },
-                  false,
-                  'loginUserStore'
+               });
+
+               Cookies.set(
+                  'token',
+                  data.jwt,
+                  {
+                     expires: 1/4, // 6 hours
+                     path: '/',
+                     secure: false,
+                  }
                );
             })
-            .catch(() => {
+            .catch((error) => {
                set({ loading: false });
+               throw new Error(error.response.data.message);
             });
       },
       logout: () => {
          set({ isLogged: false, jwt: undefined });
+         Cookies.remove('token');
       }
    }))
 );
