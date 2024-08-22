@@ -5,7 +5,7 @@ import Logo from '@/icons/btc.svg';
 import { useUserStore } from "@/store/userStore";
 
 export default function Login() {
-   const [password, setPassword] = useState('Jm12345');
+   const [password, setPassword] = useState('');
    const [showPassword, setShowPassword] = useState(false);
    const [rememberMe, setRememberMe] = useState(true);
    const [error, setError] = useState('');
