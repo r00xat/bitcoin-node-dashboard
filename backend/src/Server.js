@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import history from 'connect-history-api-fallback';
 
+import { requireLogin } from './middlewares/auth.js';
+
 import ping from './routes/ping.js';
 import bitcoin from './routes/bitcoin.js';
 import auth from './routes/auth.js';
@@ -33,7 +35,7 @@ class Server {
    routes() {
       this.app.use('/ping', ping);
 
-      this.app.use('/bitcoin', bitcoin);
+      this.app.use('/bitcoin', requireLogin, bitcoin);
 
       this.app.use('/auth', auth);
    }
