@@ -1,6 +1,6 @@
 import NavBar from '@/components/NavBar';
-import { Routes, Route, useLocation, useNavigate, Outlet } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import { Routes, Route, useLocation, Outlet, Navigate } from 'react-router-dom';
+import React from 'react';
 import {  } from 'react-router-dom'
 import { Home, Peers, Login } from '@/views';
 import { useUserStore } from "@/store/userStore";
@@ -25,15 +25,8 @@ const App: React.FC = () => {
 
 const ProtectedRoute: React.FC = () => {
    const userStore = useUserStore();
-   const navigate = useNavigate();
 
-   useEffect(() => {
-      if (!userStore.jwt) {
-         navigate('/login');
-      }
-   }, [userStore.jwt]);
-
-   return <Outlet />;
+   return userStore.jwt ? <Outlet /> : <Navigate to="/login" />;
 }
 
 export default App;

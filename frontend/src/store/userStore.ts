@@ -30,7 +30,7 @@ export const useUserStore = create<UserStore>()(
                   'token',
                   data.jwt,
                   {
-                     expires: 1/4, // 6 hours
+                     expires: new Date(new Date().getTime() + 21600000), // 6 hours
                      path: '/',
                      secure: false,
                   }

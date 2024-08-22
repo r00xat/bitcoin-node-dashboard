@@ -5,13 +5,16 @@ import { BrowserRouter } from 'react-router-dom';
 import { Chart as ChartJS, Colors, ArcElement, Tooltip, Legend } from "chart.js";
 
 import '@/main.scss';
+import { AxiosInterceptor } from './store/api/api';
 
 ChartJS.register(ArcElement, Tooltip, Legend, Colors);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
    <React.StrictMode>
       <BrowserRouter>
-         <App />
+         <AxiosInterceptor>
+            <App />
+         </AxiosInterceptor>
       </BrowserRouter>
    </React.StrictMode>
 );
