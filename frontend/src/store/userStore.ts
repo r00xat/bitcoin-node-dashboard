@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import Cookies from 'js-cookie';
 import api from './api/api';
+import { getToken, removeToken, setToken } from '@/utils/auth';
 
 type UserStore = {
    isLogged: boolean;
@@ -14,7 +14,7 @@ type UserStore = {
 export const useUserStore = create<UserStore>()(
    devtools((set) => ({
       isLogged: false,
-      jwt: Cookies.get('token'),
+      jwt: getToken(),
       loading: false,
       login: async (password) => {
          set({ loading: true });
@@ -25,16 +25,7 @@ export const useUserStore = create<UserStore>()(
                   jwt: data.jwt,
                   loading: false
                });
-
-               Cookies.set(
-                  'token',
-                  data.jwt,
-                  {
-                     expires: new Date(new Date().getTime() + 21600000), // 6 hours
-                     path: '/',
-                     secure: false,
-                  }
-               );
+               setToken(data.jwt);
             })
             .catch((error) => {
                set({ loading: false });
@@ -43,7 +34,7 @@ export const useUserStore = create<UserStore>()(
       },
       logout: () => {
          set({ isLogged: false, jwt: undefined });
-         Cookies.remove('token');
+         removeToken();
       }
    }))
 );
