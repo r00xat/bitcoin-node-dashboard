@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import { useUserStore } from "@/store/userStore";
 
 const api = axios.create({
    baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -9,11 +9,20 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(function (config) {
-   const token = Cookies.get('token');
-   if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+   if (useUserStore.getState().jwt) {
+      config.headers.Authorization = `Bearer ${useUserStore.getState().jwt}`;
    }
    return config;
+});
+
+api.interceptors.response.use(function (response) {
+   return response;
+}, function (error) {
+   if (error.response?.status === 401) {
+      useUserStore.getState().logout();
+   } else {
+      return Promise.reject(error);
+   }
 });
 
 export default api;
