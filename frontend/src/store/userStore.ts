@@ -13,7 +13,7 @@ type UserStore = {
 
 export const useUserStore = create<UserStore>()(
    devtools((set) => ({
-      isLogged: false,
+      isLogged: getToken() ? true : false,
       jwt: getToken(),
       loading: false,
       login: async (password) => {
