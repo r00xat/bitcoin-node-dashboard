@@ -1,11 +1,10 @@
 import NavBar from '@/components/NavBar';
 import { useNavigate , Outlet, createBrowserRouter, RouterProvider, useLocation } from 'react-router-dom';
 import React, { useEffect } from 'react';
-import {  } from 'react-router-dom'
-import { Home, Peers, Login } from '@/views';
+import Login from '@/views/Login';
 import { useUserStore } from "@/store/userStore";
 
-const Layout: React.FC = () => {
+const AuthLayout: React.FC = () => {
 
    const userStore = useUserStore();
    const navigate = useNavigate();
@@ -18,10 +17,14 @@ const Layout: React.FC = () => {
    }, [userStore.isLogged, location.pathname]);
 
    return (
-      <React.Fragment>
-         <NavBar />
-         <Outlet />
-      </React.Fragment>
+      <React.Suspense fallback={null}>
+         { userStore.isLogged && (
+            <React.Fragment>
+               <NavBar />
+               <Outlet />
+            </React.Fragment>
+         )}
+      </React.Suspense>
    );
 }
 
@@ -31,15 +34,15 @@ const router = createBrowserRouter([
       element: <Login />
    },
    {
-      element: <Layout />,
+      element: <AuthLayout />,
       children: [
          {
             path: "/",
-            element: <Home />
+            Component: React.lazy(() => import("@/views/Home/Home"))
          },
          {
             path: "/peers",
-            element: <Peers />
+            Component: React.lazy(() => import("@/views/Peers"))
          }
       ]
    }

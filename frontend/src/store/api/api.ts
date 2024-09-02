@@ -18,7 +18,7 @@ api.interceptors.request.use(function (config) {
 api.interceptors.response.use(function (response) {
    return response;
 }, function (error) {
-   if (error.response?.status === 401) {
+   if (error.response?.status === 401 && useUserStore.getState().isLogged) {
       useUserStore.getState().logout();
    } else {
       return Promise.reject(error);
