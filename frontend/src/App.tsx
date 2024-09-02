@@ -17,14 +17,14 @@ const AuthLayout: React.FC = () => {
    }, [userStore.isLogged, location.pathname]);
 
    return (
-      <React.Suspense fallback={null}>
+      <React.Fragment>
          { userStore.isLogged && (
             <React.Fragment>
                <NavBar />
                <Outlet />
             </React.Fragment>
          )}
-      </React.Suspense>
+      </React.Fragment>
    );
 }
 
@@ -38,11 +38,17 @@ const router = createBrowserRouter([
       children: [
          {
             path: "/",
-            Component: React.lazy(() => import("@/views/Home/Home"))
+            async lazy() {
+               const Home = await import("@/views/Home/Home");
+               return { Component: Home.default };
+            }
          },
          {
             path: "/peers",
-            Component: React.lazy(() => import("@/views/Peers"))
+            async lazy() {
+               const Peers = await import("@/views/Peers");
+               return { Component: Peers.default };
+            }
          }
       ]
    }
