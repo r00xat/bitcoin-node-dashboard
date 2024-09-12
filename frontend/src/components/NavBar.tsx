@@ -6,6 +6,7 @@ import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { useUserStore } from "@/store/userStore";
 import Logo from '@/icons/btc.svg';
 import './NavBar.scss'
+import RefreshTime from '@/components/RefreshTime';
 
 export default function NavBar() {
    const [isOpen, setIsOpen] = useState(false);
@@ -62,6 +63,9 @@ export default function NavBar() {
                <div className="space-y-1 px-2 pb-3 pt-2">
                   <Links />
                </div>
+               <div className="space-y-1 px-2 pb-3 pt-2">
+                  <RefreshTime />
+               </div>
             </div>
          );
       }
@@ -93,9 +97,12 @@ export default function NavBar() {
                         Bitcoin Node Dasboard
                      </div>
                   </div>
-                  <div className="hidden sm:ml-6 sm:block">
+                  <div className="hidden flex-row sm:ml-6 sm:flex w-full justify-between">
                      <div className="flex space-x-4">
                         <Links />
+                     </div>
+                     <div>
+                        <RefreshTime />
                      </div>
                   </div>
                </div>
