@@ -29,17 +29,32 @@ import Header from './Header';
 import StatsCard, { StatsList } from '@/components/StatsCard';
 import TopClientsChart from './TopClientsChart';
 import Card from '@/components/UI/Card';
+import { useApiStore } from '@/store/api/apiStore';
 
 const Home = () => {
    const nodeStore = useNodeStore();
    const blockchainStore = useBlockchainStore();
    const networkStore = useNetworkStore();
+   const apiStore = useApiStore();
 
    useEffect(() => {
       nodeStore.fetch();
       blockchainStore.fetch();
       networkStore.fetch();
-   }, []);
+      
+      if (apiStore.refreshTime <= 0) return;
+
+      const interval = setInterval(() => {
+         nodeStore.fetch();
+         blockchainStore.fetch();
+         networkStore.fetch();
+      }, apiStore.refreshTime);
+
+      return () => {
+         clearInterval(interval);
+      }
+
+   }, [apiStore.refreshTime]);
 
    const nodeStats: StatsList[] = [
       {

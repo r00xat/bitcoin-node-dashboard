@@ -14,6 +14,7 @@ import { Peer, usePeerStore } from '@/store/peerStore';
 import { FaSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
 import LoadingSpiner from '@/components/UI/LoadingSpiner';
+import { useApiStore } from '@/store/api/apiStore';
 
 type EChartsOption = echarts.ComposeOption<
    TooltipComponentOption | LegendComponentOption | PieSeriesOption
@@ -41,6 +42,7 @@ export default function TopClientsChart() {
    const [mostCommonClients, setMostCommonClients] = useState<Map<string, number>>(emtpyClientMap);
 
    const peerStore = usePeerStore();
+   const apiStore = useApiStore();
 
    const colors = [
       "#9e0142",
@@ -85,7 +87,18 @@ export default function TopClientsChart() {
 
    useEffect(() => {
       peerStore.fetch();
-   }, []);
+      
+      if (apiStore.refreshTime <= 0) return;
+
+      const interval = setInterval(() => {
+         peerStore.fetch();
+      }, apiStore.refreshTime);
+
+      return () => {
+         clearInterval(interval);
+      }
+
+   }, [apiStore.refreshTime]);
 
    useEffect(() => {
       const chart = echarts.init(chartRef.current);

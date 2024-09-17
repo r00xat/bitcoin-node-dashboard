@@ -1,3 +1,4 @@
+import { useApiStore } from "@/store/api/apiStore";
 import { useMainStore } from "@/store/mainStore";
 import { formatLargeNumber, formatBytes } from "@/utils/utils";
 import { useEffect } from "react";
@@ -6,10 +7,23 @@ import { FaCircleNodes, FaCloudArrowUp, FaCloudArrowDown, FaDatabase } from "rea
 export default function Header() {
 
    const mainStore = useMainStore();
+   const apiStore = useApiStore();
 
    useEffect(() => {
       mainStore.fetch();
-   }, []);
+
+      if (apiStore.refreshTime <= 0) return;
+
+      const interval = setInterval(() => {
+         mainStore.fetch();
+      }, apiStore.refreshTime);
+
+      return () => {
+         clearInterval(interval);
+      }
+
+   }, [apiStore.refreshTime]);
+
 
    const data = [
       {

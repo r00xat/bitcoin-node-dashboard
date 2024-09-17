@@ -5,6 +5,7 @@ import { formatBytes, formatUnixTime } from "@/utils/utils";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import React from "react";
+import { useApiStore } from "@/store/api/apiStore";
 
 type TableField = {
    name: string;
@@ -17,6 +18,7 @@ function Peers() {
    const [order, setOrder] = useState("");
 
    const peerStore = usePeerStore();
+   const apiStore = useApiStore();
 
    const tableFields: TableField[] = [{
       name: 'Id',
@@ -53,7 +55,18 @@ function Peers() {
 
    useEffect(() => {
       peerStore.fetch();
-   }, []);
+      
+      if (apiStore.refreshTime <= 0) return;
+
+      const interval = setInterval(() => {
+         peerStore.fetch();
+      }, apiStore.refreshTime);
+
+      return () => {
+         clearInterval(interval);
+      }
+
+   }, [apiStore.refreshTime]);
 
    useEffect(() => {
       peerStore.sortPeers(sortField, order);

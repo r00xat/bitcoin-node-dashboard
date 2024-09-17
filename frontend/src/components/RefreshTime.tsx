@@ -1,18 +1,22 @@
 import Select from 'react-select';
+import { useApiStore } from "@/store/api/apiStore";
 
-export default function refreshTime() {
+export default function RefreshTime() {
+
+   const apiStore = useApiStore();
 
    return (
       <Select
          className="outline-none"
          isSearchable={false}
+         onChange={(e) => apiStore.setrefreshTime(e!.value)}
          options={[
-            { value: 15, label: '15s' },
-            { value: 30, label: '30s' },
-            { value: 60, label: '1m' },
+            { value: 15000, label: '15s' },
+            { value: 30000, label: '30s' },
+            { value: 60000, label: '1m' },
             { value: 0, label: 'Off' }
          ]}
-         defaultValue={{ value: 15, label: '15s' }}
+         defaultValue={{ value: 15000, label: '15s' }}
          styles={{
             control: (baseStyles) => ({
               ...baseStyles,
