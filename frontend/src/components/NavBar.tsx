@@ -6,7 +6,7 @@ import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { useUserStore } from "@/store/userStore";
 import Logo from '@/icons/btc.svg';
 import './NavBar.scss'
-import RefreshTime from '@/components/RefreshTime';
+import RefreshTime from '@/components/RefreshTimer';
 
 export default function NavBar() {
    const [isOpen, setIsOpen] = useState(false);

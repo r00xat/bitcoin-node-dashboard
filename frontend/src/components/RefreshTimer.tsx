@@ -1,35 +1,46 @@
 import Select, { components, ControlProps, Props as SelectProps } from 'react-select';
 import { useApiStore } from "@/store/api/apiStore";
 import { FaRotate } from 'react-icons/fa6';
-import { MouseEventHandler, useState } from 'react';
+import { useState } from 'react';
 
 function Control({ children, ...props }: ControlProps) {
    const [rotate, setRotate] = useState(false);
 
-   const handleMouseDown = () => {
+   // @ts-expect-error onRefreshClick
+   const { onRefreshMouseDown } = props.selectProps;
+
+   function handleMouseDown(e: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
+      onRefreshMouseDown(e);
       setRotate(true);
       setTimeout(() => setRotate(false), 1000);
    }
 
    return (
-     <components.Control {...props}>
+      <components.Control {...props}>
          <span onMouseDown={handleMouseDown} className="mx-2">
-            <FaRotate height={20} color="9ca3af" className={rotate ? "animate-spin" : ""}/>
+            <FaRotate height={20} color="9ca3af" className={rotate ? "animate-spin" : ""} />
          </span>
          {children}
-     </components.Control>
+      </components.Control>
    );
 }
 
 export default function RefreshTime(props: SelectProps) {
    const apiStore = useApiStore();
-    
+
+   function onRefreshClick(e: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
+      e.preventDefault();
+      e.stopPropagation();
+   }
+
    return (
       <Select
          {...props}
          className="outline-none"
          isSearchable={false}
-         onChange={(e) => apiStore.setrefreshTime(e!.value)} 
+         // @ts-expect-error onRefreshClick
+         onRefreshMouseDown={onRefreshClick}
+         onChange={(e) => apiStore.setrefreshTime((e as { value: number }).value)}
          components={{ Control: Control }}
          options={[
             { value: 15000, label: '15s' },
@@ -40,8 +51,8 @@ export default function RefreshTime(props: SelectProps) {
          defaultValue={{ value: 15000, label: '15s' }}
          styles={{
             control: (baseStyles) => ({
-              ...baseStyles,
-              backgroundColor: '#1f2937',
+               ...baseStyles,
+               backgroundColor: '#1f2937',
             }),
          }}
          theme={(theme) => ({
