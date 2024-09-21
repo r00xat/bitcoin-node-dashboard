@@ -1,15 +1,36 @@
-import Select from 'react-select';
+import Select, { components, ControlProps, Props as SelectProps } from 'react-select';
 import { useApiStore } from "@/store/api/apiStore";
+import { FaRotate } from 'react-icons/fa6';
+import { MouseEventHandler, useState } from 'react';
 
-export default function RefreshTime() {
+function Control({ children, ...props }: ControlProps) {
+   const [rotate, setRotate] = useState(false);
 
-   const apiStore = useApiStore();
+   const handleMouseDown = () => {
+      setRotate(true);
+      setTimeout(() => setRotate(false), 1000);
+   }
 
    return (
+     <components.Control {...props}>
+         <span onMouseDown={handleMouseDown} className="mx-2">
+            <FaRotate height={20} color="9ca3af" className={rotate ? "animate-spin" : ""}/>
+         </span>
+         {children}
+     </components.Control>
+   );
+}
+
+export default function RefreshTime(props: SelectProps) {
+   const apiStore = useApiStore();
+    
+   return (
       <Select
+         {...props}
          className="outline-none"
          isSearchable={false}
-         onChange={(e) => apiStore.setrefreshTime(e!.value)}
+         onChange={(e) => apiStore.setrefreshTime(e!.value)} 
+         components={{ Control: Control }}
          options={[
             { value: 15000, label: '15s' },
             { value: 30000, label: '30s' },
