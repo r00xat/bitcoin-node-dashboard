@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import api from './api/api';
+import { IBaseApiStore } from './types';
 
 type network = {
    available: boolean;
    address: string | undefined;
 }
 
-type NetworkStore = {
+interface INetworkStore extends IBaseApiStore {
    totalBytesSent: number;
    uploadTarget: {
       target: number;
@@ -29,7 +30,7 @@ const defaultNetwork = {
    address: undefined,
 }
 
-export const useNetworkStore = create<NetworkStore>()(
+export const useNetworkStore = create<INetworkStore>()(
    devtools((set) => ({
       totalBytesSent: 0,
       uploadTarget: {

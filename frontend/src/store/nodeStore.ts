@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import api from './api/api';
+import { IBaseApiStore } from './types';
 
-type NodeStore = {
+interface INodeStore extends IBaseApiStore {
    client: string;
    protocolVersion: number;
    port: number;
@@ -12,7 +13,7 @@ type NodeStore = {
    fetch(): unknown;
 }
 
-export const useNodeStore = create<NodeStore>()(
+export const useNodeStore = create<INodeStore>()(
    devtools((set) => ({
       client: '',
       protocolVersion: 0,

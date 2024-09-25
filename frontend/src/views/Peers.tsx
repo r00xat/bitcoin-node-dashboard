@@ -5,7 +5,7 @@ import { formatBytes, formatUnixTime } from "@/utils/utils";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import React from "react";
-import { useApiStore } from "@/store/api/apiStore";
+import useRefreshStores from "@/hooks/useRefreshStores";
 
 type TableField = {
    name: string;
@@ -18,7 +18,8 @@ function Peers() {
    const [order, setOrder] = useState("");
 
    const peerStore = usePeerStore();
-   const apiStore = useApiStore();
+
+   useRefreshStores([peerStore]);
 
    const tableFields: TableField[] = [{
       name: 'Id',
@@ -52,21 +53,6 @@ function Peers() {
 
    //To get the show property on showOrHideValue function
    const tableFieldsHashMap = new Map(tableFields.map((field) => [field.key, field]));
-
-   useEffect(() => {
-      peerStore.fetch();
-      
-      if (apiStore.refreshTime <= 0) return;
-
-      const interval = setInterval(() => {
-         peerStore.fetch();
-      }, apiStore.refreshTime);
-
-      return () => {
-         clearInterval(interval);
-      }
-
-   }, [apiStore.refreshTime]);
 
    useEffect(() => {
       peerStore.sortPeers(sortField, order);

@@ -1,50 +1,38 @@
-import { useApiStore } from "@/store/api/apiStore";
 import { useMainStore } from "@/store/mainStore";
 import { formatLargeNumber, formatBytes } from "@/utils/utils";
-import { useEffect } from "react";
 import { FaCircleNodes, FaCloudArrowUp, FaCloudArrowDown, FaDatabase } from "react-icons/fa6";
 
-export default function Header() {
+type HeaderProps = {
+   totalConnections: number;
+   totalUploadTraffic: number;
+   totalDownloadTraffic: number;
+   txInMeempool: number;
+}
+
+export default function Header(props: HeaderProps) {
 
    const mainStore = useMainStore();
-   const apiStore = useApiStore();
-
-   useEffect(() => {
-      mainStore.fetch();
-
-      if (apiStore.refreshTime <= 0) return;
-
-      const interval = setInterval(() => {
-         mainStore.fetch();
-      }, apiStore.refreshTime);
-
-      return () => {
-         clearInterval(interval);
-      }
-
-   }, [apiStore.refreshTime]);
-
 
    const data = [
       {
          icon: <FaCircleNodes size={70} color="#36a3f7" />,
          title: "Total Connections",
-         value: formatLargeNumber(mainStore.totalConnections)
+         value: formatLargeNumber(props.totalConnections)
       },
       {
          icon: <FaCloudArrowUp size={70} color="#f4516c" />,
          title: "Upload Traffic",
-         value: formatBytes(mainStore.totalUploadTraffic)
+         value: formatBytes(props.totalUploadTraffic)
       },
       {
          icon: <FaCloudArrowDown size={70} color="#34bfa3" />,
          title: "Download Traffic",
-         value: formatBytes(mainStore.totalDownloadTraffic)
+         value: formatBytes(props.totalDownloadTraffic)
       },
       {
          icon: <FaDatabase size={70} color="#ffcb8c" />,
          title: "TX in Mempool",
-         value: formatLargeNumber(mainStore.txInMeempool)
+         value: formatLargeNumber(props.txInMeempool)
       }
    ];
 
@@ -53,7 +41,7 @@ export default function Header() {
          return (
             <div className="animate-pulse flex">
                <div className="flex-1">
-                  <div className="h-5 bg-slate-200 rounded"/>
+                  <div className="h-5 bg-slate-200 rounded" />
                </div>
             </div>
          );

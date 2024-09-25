@@ -1,19 +1,18 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import api from './api/api';
+import { IBaseApiStore } from './types';
 
-type MainStore = {
+interface IMainStore extends IBaseApiStore {
    totalConnections: number;
    totalUploadTraffic: number;
    totalDownloadTraffic: number;
    bannedPeers: number;
    txInMeempool: number;
    latestBlock: number;
-   loading: boolean;
-   fetch(): unknown;
-};
+}
 
-export const useMainStore = create<MainStore>()(
+export const useMainStore = create<IMainStore>()(
    devtools((set) => ({
       totalConnections: 0,
       totalUploadTraffic: 0,

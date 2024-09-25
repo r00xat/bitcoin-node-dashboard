@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import api from './api/api';
+import { IBaseApiStore } from './types';
 
-type BlockchainStore = {
+interface IBlockchainStore extends IBaseApiStore {
    chain: string;
    size: number;
    difficulty: number;
@@ -13,7 +14,7 @@ type BlockchainStore = {
    fetch(): unknown;
 }
 
-export const useBlockchainStore = create<BlockchainStore>()(
+export const useBlockchainStore = create<IBlockchainStore>()(
    devtools((set) => ({
       chain: '',
       size: 0,

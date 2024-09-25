@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import {
    formatLargeNumber,
    formatBytes,
@@ -29,32 +28,19 @@ import Header from './Header';
 import StatsCard, { StatsList } from '@/components/StatsCard';
 import TopClientsChart from './TopClientsChart';
 import Card from '@/components/UI/Card';
-import { useApiStore } from '@/store/api/apiStore';
+import useRefreshStores from '@/hooks/useRefreshStores';
+import { useMainStore } from '@/store/mainStore';
+import { usePeerStore } from '@/store/peerStore';
+
 
 const Home = () => {
+   const mainStore = useMainStore();
    const nodeStore = useNodeStore();
    const blockchainStore = useBlockchainStore();
    const networkStore = useNetworkStore();
-   const apiStore = useApiStore();
+   const peerStore = usePeerStore();
 
-   useEffect(() => {
-      nodeStore.fetch();
-      blockchainStore.fetch();
-      networkStore.fetch();
-      
-      if (apiStore.refreshTime <= 0) return;
-
-      const interval = setInterval(() => {
-         nodeStore.fetch();
-         blockchainStore.fetch();
-         networkStore.fetch();
-      }, apiStore.refreshTime);
-
-      return () => {
-         clearInterval(interval);
-      }
-
-   }, [apiStore.refreshTime]);
+   useRefreshStores([mainStore, nodeStore, blockchainStore, networkStore, peerStore]);
 
    const nodeStats: StatsList[] = [
       {
@@ -147,13 +133,18 @@ const Home = () => {
 
    return (
       <>
-         <Header />
+         <Header 
+            totalConnections={mainStore.totalConnections} 
+            totalUploadTraffic={mainStore.totalUploadTraffic} 
+            totalDownloadTraffic={mainStore.totalDownloadTraffic} 
+            txInMeempool={mainStore.txInMeempool}
+         />
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 m-3 mt-7">
             <StatsCard title="Node" statsList={nodeStats} loading={nodeStore.loading} />
             <StatsCard title="Blockchain" statsList={blockchainStats} loading={blockchainStore.loading} />
             <StatsCard title="Network" statsList={networkStats} loading={networkStore.loading} />
             <Card title="Top Peer Clients" className="col-span-1 md:col-span-2">
-               <TopClientsChart />
+               <TopClientsChart peers={peerStore.peers}/>
             </Card>
          </div>
       </>

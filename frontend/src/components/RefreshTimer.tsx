@@ -1,5 +1,5 @@
 import Select, { components, ControlProps, Props as SelectProps } from 'react-select';
-import { useApiStore } from "@/store/api/apiStore";
+import { useRefreshStore } from "@/store/refreshStore";
 import { FaRotate } from 'react-icons/fa6';
 import { useState } from 'react';
 
@@ -26,7 +26,7 @@ function Control({ children, ...props }: ControlProps) {
 }
 
 export default function RefreshTime(props: SelectProps) {
-   const apiStore = useApiStore();
+   const refreshStore = useRefreshStore();
 
    function onRefreshClick(e: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
       e.preventDefault();
@@ -40,7 +40,7 @@ export default function RefreshTime(props: SelectProps) {
          isSearchable={false}
          // @ts-expect-error onRefreshClick
          onRefreshMouseDown={onRefreshClick}
-         onChange={(e) => apiStore.setrefreshTime((e as { value: number }).value)}
+         onChange={(e) => refreshStore.setrefreshTime((e as { value: number }).value)}
          components={{ Control: Control }}
          options={[
             { value: 15000, label: '15s' },

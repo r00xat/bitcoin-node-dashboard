@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import api from './api/api';
+import { IBaseApiStore } from './types';
 
 export type Peer = {
    id: number;
@@ -16,14 +17,14 @@ export type Peer = {
    inbound: boolean;
 }
 
-type PeerStore = {
+interface IPeerStore extends IBaseApiStore {
    peers: Peer[];
    loading: boolean;
    fetch(): unknown;
    sortPeers(sortField: unknown, order: string): unknown;
 }
 
-export const usePeerStore = create<PeerStore>()(
+export const usePeerStore = create<IPeerStore>()(
    devtools((set) => ({
       peers: [],
       loading: false,

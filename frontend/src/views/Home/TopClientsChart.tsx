@@ -14,7 +14,6 @@ import { Peer, usePeerStore } from '@/store/peerStore';
 import { FaSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
 import LoadingSpiner from '@/components/UI/LoadingSpiner';
-import { useApiStore } from '@/store/api/apiStore';
 
 type EChartsOption = echarts.ComposeOption<
    TooltipComponentOption | LegendComponentOption | PieSeriesOption
@@ -28,10 +27,10 @@ echarts.use([
    LabelLayout
 ]);
 
-export default function TopClientsChart() {
 
-   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-   const [_chart, setChart] = useState<echarts.ECharts>();
+export default function TopClientsChart({ peers }: { peers: Peer[] }) {
+
+   const [chart, setChart] = useState<echarts.ECharts>();
    const chartRef = useRef<HTMLDivElement>(null);
 
    const emtpyClientMap = new Map<string, number>();
@@ -42,7 +41,6 @@ export default function TopClientsChart() {
    const [mostCommonClients, setMostCommonClients] = useState<Map<string, number>>(emtpyClientMap);
 
    const peerStore = usePeerStore();
-   const apiStore = useApiStore();
 
    const colors = [
       "#9e0142",
@@ -86,21 +84,6 @@ export default function TopClientsChart() {
    };
 
    useEffect(() => {
-      peerStore.fetch();
-      
-      if (apiStore.refreshTime <= 0) return;
-
-      const interval = setInterval(() => {
-         peerStore.fetch();
-      }, apiStore.refreshTime);
-
-      return () => {
-         clearInterval(interval);
-      }
-
-   }, [apiStore.refreshTime]);
-
-   useEffect(() => {
       const chart = echarts.init(chartRef.current);
       chart.setOption({ ...options, resizeObserver });
       setChart(chart);
@@ -109,11 +92,15 @@ export default function TopClientsChart() {
       return () => {
          chart?.dispose();
       }
+   }, []);
+
+   useEffect(() => {
+      chart?.setOption({ series: [{ data: Array.from(mostCommonClients).map(([client, count]) => ({ value: count, name: client })) }] });
    }, [mostCommonClients]);
 
    useEffect(() => {
-      setMostCommonClients(getMostCommonClient(peerStore.peers));
-   }, [peerStore.peers]);
+      setMostCommonClients(getMostCommonClient(peers));
+   }, [peers]);
 
    return (
       <div className='grid'>
@@ -123,7 +110,7 @@ export default function TopClientsChart() {
                {peerStore.loading && loadingList()}
                {!peerStore.loading && (
                   Array.from(mostCommonClients).map(([client, count], index) => {
-                     const total = peerStore.peers.length;
+                     const total = peers.length;
                      const percentage = ((count / total) * 100).toFixed(0);
                      return (
                         <li key={client} className={clsx("flex justify-between items-center h-[10%]", {

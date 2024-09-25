@@ -3,15 +3,15 @@ import { devtools } from 'zustand/middleware';
 import api from './api/api';
 import { getToken, removeToken, setToken } from '@/utils/auth';
 
-type UserStore = {
+interface IUserStore {
    isLogged: boolean;
    jwt: string | undefined;
    loading: boolean;
    login(password: string): Promise<void>;
    logout(): unknown;
-};
+}
 
-export const useUserStore = create<UserStore>()(
+export const useUserStore = create<IUserStore>()(
    devtools((set) => ({
       isLogged: getToken() ? true : false,
       jwt: getToken(),
