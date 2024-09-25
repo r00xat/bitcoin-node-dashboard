@@ -2,7 +2,7 @@ import { useRefreshStore } from "@/store/refreshStore";
 import { IBaseApiStore } from "@/store/types";
 import { useEffect } from "react";
 
-export default function useRefreshStores<T extends IBaseApiStore>(stores: T[]) {
+export default function useRefreshData<T extends IBaseApiStore>(stores: T[]) {
 
    const refreshStore = useRefreshStore();
 
@@ -12,6 +12,10 @@ export default function useRefreshStores<T extends IBaseApiStore>(stores: T[]) {
          store.fetch();
       });
    };
+
+   useEffect(() => {
+      refreshStores();
+   } , [refreshStore.refresh]);
 
    useEffect(() => {
       if (refreshStore.refreshTime <= 0) return;

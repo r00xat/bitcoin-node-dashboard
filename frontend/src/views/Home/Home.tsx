@@ -28,7 +28,7 @@ import Header from './Header';
 import StatsCard, { StatsList } from '@/components/StatsCard';
 import TopClientsChart from './TopClientsChart';
 import Card from '@/components/UI/Card';
-import useRefreshStores from '@/hooks/useRefreshStores';
+import useRefreshData from '@/hooks/useRefreshData';
 import { useMainStore } from '@/store/mainStore';
 import { usePeerStore } from '@/store/peerStore';
 
@@ -40,7 +40,7 @@ const Home = () => {
    const networkStore = useNetworkStore();
    const peerStore = usePeerStore();
 
-   useRefreshStores([mainStore, nodeStore, blockchainStore, networkStore, peerStore]);
+   useRefreshData([mainStore, nodeStore, blockchainStore, networkStore, peerStore]);
 
    const nodeStats: StatsList[] = [
       {

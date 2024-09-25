@@ -31,6 +31,7 @@ export default function RefreshTime(props: SelectProps) {
    function onRefreshClick(e: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
       e.preventDefault();
       e.stopPropagation();
+      refreshStore.triggerRefresh();
    }
 
    return (

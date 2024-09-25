@@ -5,7 +5,7 @@ import { formatBytes, formatUnixTime } from "@/utils/utils";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import React from "react";
-import useRefreshStores from "@/hooks/useRefreshStores";
+import useRefreshData from "@/hooks/useRefreshData";
 
 type TableField = {
    name: string;
@@ -19,7 +19,7 @@ function Peers() {
 
    const peerStore = usePeerStore();
 
-   useRefreshStores([peerStore]);
+   useRefreshData([peerStore]);
 
    const tableFields: TableField[] = [{
       name: 'Id',
