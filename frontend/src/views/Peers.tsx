@@ -1,5 +1,6 @@
 import Card from "@/components/UI/Card";
-import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
+import { TiArrowSortedDown, TiArrowSortedUp} from "react-icons/ti";
+import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import { usePeerStore } from "@/store/peerStore";
 import { formatBytes, formatUnixTime } from "@/utils/utils";
 import { useEffect, useState } from "react";
@@ -30,8 +31,8 @@ function Peers() {
       key: 'address',
       show: 'md'
    }, {
-      name: 'Inbound',
-      key: 'inbound',
+      name: 'Direction',
+      key: 'direction',
       show: 'always'
    }, {
       name: 'Services',
@@ -56,7 +57,7 @@ function Peers() {
 
    useEffect(() => {
       peerStore.sortPeers(sortField, order);
-   }, [sortField, order]);
+   }, [peerStore.peers, sortField, order]);
 
 
    function formatServices(services: string[]): React.ReactNode {
@@ -92,11 +93,13 @@ function Peers() {
                >
                   {service}
                   {
-                     tooltip && (<span
-                        className="pointer-events-none absolute -top-10 -left-2/4 w-max opacity-0 transition-opacity group-hover:opacity-100 rounded-md p-2 bg-gray-900 text-white"
-                     >
-                        {tooltip}
-                     </span>)
+                     tooltip && (
+                        <span
+                           className="pointer-events-none absolute -top-10 -left-2/4 w-max opacity-0 transition-opacity group-hover:opacity-100 rounded-md p-2 bg-gray-900 text-white"
+                        >
+                           {tooltip}
+                        </span>
+                     )
                   }
                </span>
             </React.Fragment>
@@ -154,14 +157,20 @@ function Peers() {
                <tbody>
                   {peerStore.peers.map((peer) => (
                      <tr key={peer.id} className="border-b last:border-0 hover:bg-gray-100 text-center odd:bg-gray-50">
-                        <td className={clsx('py-2.5', showOrHideValue('id'))}>
+                        <td className={clsx(showOrHideValue('id'))}>
                            {peer.id}
                         </td>
                         <td className={showOrHideValue('address')}>
                            {peer.address.split(':')[0]}
                         </td>
-                        <td className={showOrHideValue('inbound')}>
-                           {peer.inbound ? "Yes" : "No"}
+                        <td className={showOrHideValue('direction')}>
+                           <span className="flex items-center justify-center" title={peer.inbound ? 'Inbound' : 'Outbound'}>
+                              {
+                                 peer.inbound 
+                                 ? <FaArrowRightLong className="text-green-500" /> 
+                                 : <FaArrowLeftLong className="text-red-500" />
+                              }
+                           </span>
                         </td>
                         <td className={clsx(showOrHideValue('services'))}>
                            <div className="flex flex-wrap justify-center items-center py-2.5">
