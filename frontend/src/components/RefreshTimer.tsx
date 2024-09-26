@@ -6,7 +6,7 @@ import { useState } from 'react';
 function Control({ children, ...props }: ControlProps) {
    const [rotate, setRotate] = useState(false);
 
-   // @ts-expect-error onRefreshClick
+   // @ts-expect-error onRefreshMouseDown
    const { onRefreshMouseDown } = props.selectProps;
 
    function handleMouseDown(e: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
@@ -34,22 +34,24 @@ export default function RefreshTime(props: SelectProps) {
       refreshStore.triggerRefresh();
    }
 
+   const optionsMap = new Map([
+      [15000, '15s'],
+      [30000, '30s'],
+      [60000, '1m'],
+      [0, 'Off']
+   ]);
+
    return (
       <Select
          {...props}
          className="outline-none"
          isSearchable={false}
-         // @ts-expect-error onRefreshClick
+         // @ts-expect-error onRefreshMouseDown
          onRefreshMouseDown={onRefreshClick}
-         onChange={(e) => refreshStore.setrefreshTime((e as { value: number }).value)}
+         onChange={(e) => refreshStore.setRefreshTime((e as { value: number }).value)}
          components={{ Control: Control }}
-         options={[
-            { value: 15000, label: '15s' },
-            { value: 30000, label: '30s' },
-            { value: 60000, label: '1m' },
-            { value: 0, label: 'Off' }
-         ]}
-         defaultValue={{ value: 15000, label: '15s' }}
+         options={Array.from(optionsMap).map(([value, label]) => ({ value, label }))}
+         defaultValue={{ value: refreshStore.refreshTime, label: optionsMap.get(refreshStore.refreshTime)}}
          styles={{
             control: (baseStyles) => ({
                ...baseStyles,
