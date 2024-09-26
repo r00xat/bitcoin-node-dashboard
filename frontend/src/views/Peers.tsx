@@ -1,6 +1,7 @@
 import Card from "@/components/UI/Card";
-import { TiArrowSortedDown, TiArrowSortedUp} from "react-icons/ti";
-import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
+import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
+import { FaArrowRightLong, FaArrowLeftLong, FaArrowDown, FaArrowUp } from "react-icons/fa6";
+import { TbWorld } from "react-icons/tb";
 import { usePeerStore } from "@/store/peerStore";
 import { formatBytes, formatUnixTime } from "@/utils/utils";
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ type TableField = {
 function Peers() {
    const [sortField, setSortField] = useState("");
    const [order, setOrder] = useState("");
+   const [showDetails, setShowDetails] = useState<number | null>(null);
 
    const peerStore = usePeerStore();
 
@@ -110,13 +112,21 @@ function Peers() {
    function showOrHideValue(fieldName: TableField['key']) {
       const showProperty = tableFieldsHashMap.get(fieldName)?.show;
       return clsx({
-        'hidden': showProperty === 'md',
-        'md:table-cell': showProperty === 'md',
-        'lg:table-cell': showProperty === 'lg',
-        'xl:table-cell': showProperty === 'xl',
-        '2xl:table-cell': showProperty === '2xl',
+         'hidden': showProperty === 'md',
+         'md:table-cell': showProperty === 'md',
+         'lg:table-cell': showProperty === 'lg',
+         'xl:table-cell': showProperty === 'xl',
+         '2xl:table-cell': showProperty === '2xl',
       });
-    }
+   }
+
+   function handleRowClick(peerId: number) {
+      if (showDetails === peerId) {
+         setShowDetails(null);
+      } else {
+         setShowDetails(peerId);
+      }
+   }
 
    return (
       <Card className="m-3 mt-7" title="Connected Peers">
@@ -156,36 +166,66 @@ function Peers() {
                </thead>
                <tbody>
                   {peerStore.peers.map((peer) => (
-                     <tr key={peer.id} className="border-b last:border-0 hover:bg-gray-100 text-center odd:bg-gray-50">
-                        <td className={clsx(showOrHideValue('id'))}>
-                           {peer.id}
-                        </td>
-                        <td className={showOrHideValue('address')}>
-                           {peer.address.split(':')[0]}
-                        </td>
-                        <td className={showOrHideValue('direction')}>
-                           <span className="flex items-center justify-center" title={peer.inbound ? 'Inbound' : 'Outbound'}>
-                              {
-                                 peer.inbound 
-                                 ? <FaArrowRightLong className="text-green-500" /> 
-                                 : <FaArrowLeftLong className="text-red-500" />
-                              }
-                           </span>
-                        </td>
-                        <td className={clsx(showOrHideValue('services'))}>
-                           <div className="flex flex-wrap justify-center items-center py-2.5">
-                              {formatServices(peer.services)}
-                           </div>
-                        </td>
-                        <td className={showOrHideValue('conectionTime')}>
-                           {formatUnixTime(peer.conectionTime)}
-                        </td>
-                        <td className={showOrHideValue('subversion')}>
-                           {peer.subversion}</td>
-                        <td className={showOrHideValue('totalbytes')}>
-                           {formatBytes(peer.bytessent + peer.bytesrecv)}
-                        </td>
-                     </tr>
+                     <React.Fragment key={peer.id}>
+                        <tr
+                           onClick={() => handleRowClick(peer.id)}
+                           className="border-b last:border-0 hover:bg-gray-100 text-center odd:bg-gray-50 cursor-pointer"
+                        >
+                           <td className={clsx(showOrHideValue('id'))}>
+                              {peer.id}
+                           </td>
+                           <td className={showOrHideValue('address')}>
+                              {peer.address.split(':')[0]}
+                           </td>
+                           <td className={showOrHideValue('direction')}>
+                              <span className="flex items-center justify-center" >
+                                 {
+                                    peer.inbound
+                                       ? <FaArrowRightLong className="text-green-500" title="Inbound" />
+                                       : <FaArrowLeftLong className="text-red-500" title="Outbound" />
+                                 }
+                              </span>
+                           </td>
+                           <td className={clsx(showOrHideValue('services'))}>
+                              <div className="flex flex-wrap justify-center items-center py-2.5">
+                                 {formatServices(peer.services)}
+                              </div>
+                           </td>
+                           <td className={showOrHideValue('conectionTime')}>
+                              {formatUnixTime(peer.conectionTime)}
+                           </td>
+                           <td className={showOrHideValue('subversion')}>
+                              {peer.subversion}</td>
+                           <td className={showOrHideValue('totalbytes')}>
+                              {formatBytes(peer.bytessent + peer.bytesrecv)}
+                           </td>
+                        </tr>
+                        {
+                           showDetails === peer.id && (
+                              <tr>
+                                 <td colSpan={tableFields.length} className="p-1">
+                                    <div className="flex flex-col sm:flex-row justify-items-center sm:justify-around p-1 py-3 bg-blue-50 border border-dashed border-blue-200 rounded ">
+                                       <div className="flex justify-center sm:justify-between items-center">
+                                          <TbWorld className="mr-1" />
+                                          <span className="font-medium me-1">Full address:</span>
+                                          {peer.address}
+                                       </div>
+                                       <div className="flex justify-center sm:justify-between items-center">
+                                          <FaArrowUp className="mr-1" />
+                                          <span className="font-medium me-1">Upload:</span>
+                                          {formatBytes(peer.bytessent)}
+                                       </div>
+                                       <div className="flex justify-center sm:justify-between items-center">
+                                          <FaArrowDown className="mr-1" />
+                                          <span className="font-medium me-1">Download:</span>
+                                          {formatBytes(peer.bytesrecv)}
+                                       </div>
+                                    </div>
+                                 </td>
+                              </tr>
+                           )
+                        }
+                     </React.Fragment>
                   ))}
                </tbody>
             </table>
