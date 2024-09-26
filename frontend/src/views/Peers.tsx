@@ -194,8 +194,11 @@ function Peers() {
                            <td className={showOrHideValue('conectionTime')}>
                               {formatUnixTime(peer.conectionTime)}
                            </td>
-                           <td className={showOrHideValue('subversion')} title={peer.subversion}>
-                              {peer.subversion.split('/')[0].replace(':', ' ')}</td>
+                           <td className={showOrHideValue('subversion')}>
+                              <span className="border-b border-dashed" title={peer.subversion}>
+                                 {peer.subversion.split('/')[0].replace(':', ' ')}
+                              </span>
+                           </td>
                            <td className={showOrHideValue('totalbytes')}>
                               {formatBytes(peer.bytessent + peer.bytesrecv)}
                            </td>
