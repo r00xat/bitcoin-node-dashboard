@@ -137,7 +137,7 @@ function Peers() {
                      {tableFields.map((field) => (
                         <th
                            key={field.key}
-                           className={clsx('py-2.5 cursor-pointer', {
+                           className={clsx('p-2.5 cursor-pointer', {
                               'hidden': field.show === 'md',
                               'md:table-cell': field.show === 'md',
                               'lg:table-cell': field.show === 'lg',
@@ -194,8 +194,8 @@ function Peers() {
                            <td className={showOrHideValue('conectionTime')}>
                               {formatUnixTime(peer.conectionTime)}
                            </td>
-                           <td className={showOrHideValue('subversion')}>
-                              {peer.subversion}</td>
+                           <td className={showOrHideValue('subversion')} title={peer.subversion}>
+                              {peer.subversion.split('/')[0].replace(':', ' ')}</td>
                            <td className={showOrHideValue('totalbytes')}>
                               {formatBytes(peer.bytessent + peer.bytesrecv)}
                            </td>
