@@ -1,4 +1,4 @@
-import { useMainStore } from "@/store/mainStore";
+import { useHomeStore } from "@/store/homeStore";
 import { formatLargeNumber, formatBytes } from "@/utils/utils";
 import { FaCircleNodes, FaCloudArrowUp, FaCloudArrowDown, FaDatabase } from "react-icons/fa6";
 
@@ -11,7 +11,7 @@ type HeaderProps = {
 
 export default function Header(props: HeaderProps) {
 
-   const mainStore = useMainStore();
+   const homeStore = useHomeStore();     
 
    const data = [
       {
@@ -37,7 +37,7 @@ export default function Header(props: HeaderProps) {
    ];
 
    function valueOrLoading(value: string) {
-      if (mainStore.loading) {
+      if (homeStore.loading) {
          return (
             <div className="animate-pulse flex">
                <div className="flex-1">

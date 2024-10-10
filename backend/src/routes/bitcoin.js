@@ -3,66 +3,18 @@ import bitcoinService from '../services/bitcoin.js';
 
 const router = express.Router();
 
-router.get('/main', async function (req, res, next) {
+router.get('/home', async function (req, res, next) {
    try {
-      const { netTotals, networkInfo, mempoolInfo } = await bitcoinService.main();
+      const { 
+         netTotals, 
+         networkInfo, 
+         mempoolInfo, 
+         uptime, 
+         blockchainInfo, 
+         miningInfo, 
+         peers 
+      } = await bitcoinService.home();
 
-      res.json({
-         sent: netTotals.totalbytessent,
-         received: netTotals.totalbytesrecv,
-         connections: networkInfo.connections,
-         mempool: mempoolInfo.size,
-      });
-   } catch (error) {
-      return next(error);
-   }
-});
-
-router.get('/node', async function (req, res, next) {
-   try {
-      const { uptime, networkInfo } = await bitcoinService.node();
-
-      res.json({
-         client: networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
-         protocolVersion: networkInfo.protocolversion,
-         port: process.env.BTC_PORT,
-         services: networkInfo.localservicesnames,
-         uptime,
-      });
-   } catch (error) {
-      return next(error);
-   }
-});
-
-router.get('/blockchain', async function (req, res, next) {
-   try {
-      const { blockchainInfo, miningInfo } = await bitcoinService.blockchain();
-
-      res.json({
-         chain: miningInfo.chain,
-         size: blockchainInfo.size_on_disk,
-         difficulty: miningInfo.difficulty,
-         hashRate: miningInfo.networkhashps,
-         lastBlock: blockchainInfo.blocks,
-         lastBlockTime: blockchainInfo.time
-      });
-   } catch (error) {
-      return next(error);
-   }
-});
-
-router.get('/network', async function (req, res, next) {
-   try {
-      const { netTotals, networkInfo } = await bitcoinService.network();
-
-      const networks = {
-         ipv4: networkInfo.networks.find(network => network.name === 'ipv4'),
-         ipv6: networkInfo.networks.find(network => network.name === 'ipv6'),
-         onion: networkInfo.networks.find(network => network.name === 'onion'),
-         i2p: networkInfo.networks.find(network => network.name === 'i2p'),
-         cjdns: networkInfo.networks.find(network => network.name === 'cjdns'),
-      }
-   
       const addresses = {
          ipv4: undefined,
          ipv6: undefined,
@@ -88,62 +40,73 @@ router.get('/network', async function (req, res, next) {
             addresses.i2p = addObj.address;
          }
       });
-   
+
       res.json({
-         totalbytessent: netTotals.totalbytessent,
-         uploadtarget: {
-            target: netTotals.uploadtarget.target,
-            target_reached: netTotals.uploadtarget.target_reached,
+         main: {
+            totalConnections: networkInfo.connections,
+            totalUploadTraffic: netTotals.totalbytessent,
+            totalDownloadTraffic: netTotals.totalbytesrecv,
+            txInMeempool: mempoolInfo.size,
          },
-         networks: {
-            ipv4: {
-               available: networks.ipv4 ? networks.ipv4.reachable : false,
-               address: addresses.ipv4,
+         node: {
+            client: networkInfo.subversion.replace(/^\/+/, '').replace(/\/+$/, ''),
+            protocolVersion: networkInfo.protocolversion,
+            port: process.env.BTC_PORT,
+            services: networkInfo.localservicesnames,
+            uptime,
+         },
+         blockchain: {
+            chain: miningInfo.chain,
+            size: blockchainInfo.size_on_disk,
+            difficulty: miningInfo.difficulty,
+            hashRate: miningInfo.networkhashps,
+            lastBlock: blockchainInfo.blocks,
+            lastBlockTime: blockchainInfo.time
+         },
+         networkInfo: {
+            uploadTarget: {
+               target: netTotals.uploadtarget.target,
+               targetReached: netTotals.uploadtarget.target_reached,
             },
-            ipv6: {
-               available: networks.ipv6 ? networks.ipv6.reachable : false,
-               address: addresses.ipv6,
-            },
-            tor: {
-               available: networks.onion ? networks.onion.reachable : false,
-               address: addresses.tor,
-            },
-            i2p: {
-               available: networks.i2p ? networks.i2p.reachable : false,
-               address: addresses.i2p,
-            },
-            cjdns: {
-               available: networks.cjdns ? networks.cjdns.reachable : false,
-               address: addresses.cjdns,
+            networks: {
+               ipv4: {
+                  available: networkInfo.networks.find(network => network.name === 'ipv4').reachable,
+                  address: addresses.ipv4,
+               },
+               ipv6: {
+                  available: networkInfo.networks.find(network => network.name === 'ipv6').reachable,
+                  address: addresses.ipv6,
+               },
+               tor: {
+                  available: networkInfo.networks.find(network => network.name === 'onion').reachable,
+                  address: addresses.tor,
+               },
+               i2p: {
+                  available: networkInfo.networks.find(network => network.name === 'i2p').reachable,
+                  address: addresses.i2p,
+               },
+               cjdns: {
+                  available: networkInfo.networks.find(network => network.name === 'cjdns').reachable,
+                  address: addresses.cjdns,
+               }
             }
-         }
+         },
+         peers: peers.map(peer => {
+            return {
+               id: peer.id,
+               address: peer.addr,
+               services: peer.servicesnames,
+               bytessent: peer.bytessent,
+               bytesrecv: peer.bytesrecv,
+               totalbytes: peer.bytessent + peer.bytesrecv,
+               conectionTime: peer.conntime,
+               version: peer.version,
+               subversion: peer.subver.replace(/^\/+/, '').replace(/\/+$/, ''),
+               connection_type: peer.connection_type,
+               inbound: peer.inbound,
+            }
+         })
       });
-   } catch (error) {
-      return next(error);
-   }
-});
-
-router.get('/peers', async function (req, res, next) {
-   try {
-      const peers = await bitcoinService.peers();
-
-      const returnPeers = peers.map(peer => {
-         return {
-            id: peer.id,
-            address: peer.addr,
-            services: peer.servicesnames,
-            bytessent: peer.bytessent,
-            bytesrecv: peer.bytesrecv,
-            totalbytes: peer.bytessent + peer.bytesrecv,
-            conectionTime: peer.conntime,
-            version: peer.version,
-            subversion: peer.subver.replace(/^\/+/, '').replace(/\/+$/, ''),
-            connection_type: peer.connection_type,
-            inbound: peer.inbound,
-         }
-      });
-   
-      res.json(returnPeers);
    } catch (error) {
       return next(error);
    }

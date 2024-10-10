@@ -20,53 +20,45 @@ import {
    FaGears,
    FaCube
 } from 'react-icons/fa6';
-import { useNodeStore } from '@/store/nodeStore';
-import { useBlockchainStore } from '@/store/blockchainStore';
-import { useNetworkStore } from '@/store/networkStore';
 
 import Header from './Header';
 import StatsCard, { StatsList } from '@/components/StatsCard';
 import TopClientsChart from './TopClientsChart';
 import Card from '@/components/UI/Card';
 import useRefreshData from '@/hooks/useRefreshData';
-import { useMainStore } from '@/store/mainStore';
-import { usePeerStore } from '@/store/peerStore';
+import { useHomeStore } from '@/store/homeStore';
 
 
 const Home = () => {
-   const mainStore = useMainStore();
-   const nodeStore = useNodeStore();
-   const blockchainStore = useBlockchainStore();
-   const networkStore = useNetworkStore();
-   const peerStore = usePeerStore();
+   const homeStore = useHomeStore();      
 
-   useRefreshData([mainStore, nodeStore, blockchainStore, networkStore, peerStore]);
+   useRefreshData([homeStore]);
 
    const nodeStats: StatsList[] = [
       {
          icon: <FaIdCard />,
          name: 'Client',
-         value: nodeStore.client
+         value: homeStore.node.client
       },
       {
          icon: <FaArrowRightArrowLeft />,
          name: 'Protocol',
-         value: nodeStore.protocolVersion
+         value: homeStore.node.protocolVersion
       },
       {
          icon: <FaNetworkWired />,
          name: 'Port',
-         value: nodeStore.port
+         value: homeStore.node.port
       },
       {
          icon: <FaClock />,
          name: 'Uptime',
-         value: formatSeconds(nodeStore.uptime)
+         value: formatSeconds(homeStore.node.uptime)
       },
       {
          icon: <FaBullhorn />,
          name: 'Services',
-         value: nodeStore.services
+         value: homeStore.node.services
       }
    ];
 
@@ -74,32 +66,32 @@ const Home = () => {
       {
          icon: <FaLink />,
          name: 'Chain',
-         value: capitalizeFirst(blockchainStore.chain)
+         value: capitalizeFirst(homeStore.blockchain.chain)
       },
       {
          icon: <FaHardDrive />,
          name: 'Size',
-         value: formatBytes(blockchainStore.size)
+         value: formatBytes(homeStore.blockchain.size)
       },
       {
          icon: <FaMicrochip />,
          name: 'Difficulty',
-         value: compactNumber(blockchainStore.difficulty)
+         value: compactNumber(homeStore.blockchain.difficulty)
       },
       {
          icon: <FaGears />,
          name: 'Hashrate',
-         value: formatHashPerSecond(blockchainStore.hashRate)
+         value: formatHashPerSecond(homeStore.blockchain.hashRate)
       },
       {
          icon: <FaCube />,
          name: 'Last Block',
-         value: formatLargeNumber(blockchainStore.lastBlock)
+         value: formatLargeNumber(homeStore.blockchain.lastBlock)
       },
       {
          icon: <FaClock />,
          name: 'Last Block Time',
-         value: formatUnixToTimeAgo(blockchainStore.lastBlockTime)
+         value: formatUnixToTimeAgo(homeStore.blockchain.lastBlockTime)
       }
    ];
 
@@ -107,44 +99,44 @@ const Home = () => {
       {
          icon: null,
          name: 'IPv4',
-         value: networkStore.networks.ipv4.available
+         value: homeStore.networkInfo.networks.ipv4.available
       },
       {
          icon: null,
          name: 'IPv6',
-         value: networkStore.networks.ipv6.available
+         value: homeStore.networkInfo.networks.ipv6.available
       },
       {
          icon: null,
          name: 'Tor',
-         value: networkStore.networks.tor.available
+         value: homeStore.networkInfo.networks.tor.available
       },
       {
          icon: null,
          name: 'Traffic Limit Set',
-         value: networkStore.uploadTarget.target > 0
+         value: homeStore.networkInfo.uploadTarget.target > 0
       },
       {
          icon: null,
          name: 'Traffic Limited',
-         value: networkStore.uploadTarget.targetReached
+         value: homeStore.networkInfo.uploadTarget.targetReached
       }
    ];
 
    return (
       <>
          <Header 
-            totalConnections={mainStore.totalConnections} 
-            totalUploadTraffic={mainStore.totalUploadTraffic} 
-            totalDownloadTraffic={mainStore.totalDownloadTraffic} 
-            txInMeempool={mainStore.txInMeempool}
+            totalConnections={homeStore.main.totalConnections} 
+            totalUploadTraffic={homeStore.main.totalUploadTraffic} 
+            totalDownloadTraffic={homeStore.main.totalDownloadTraffic} 
+            txInMeempool={homeStore.main.txInMeempool}
          />
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 m-3 mt-7">
-            <StatsCard title="Node" statsList={nodeStats} loading={nodeStore.loading} />
-            <StatsCard title="Blockchain" statsList={blockchainStats} loading={blockchainStore.loading} />
-            <StatsCard title="Network" statsList={networkStats} loading={networkStore.loading} />
+            <StatsCard title="Node" statsList={nodeStats} loading={homeStore.loading} />
+            <StatsCard title="Blockchain" statsList={blockchainStats} loading={homeStore.loading} />
+            <StatsCard title="Network" statsList={networkStats} loading={homeStore.loading} />
             <Card title="Top Peer Clients" className="col-span-1 md:col-span-2">
-               <TopClientsChart peers={peerStore.peers}/>
+               <TopClientsChart peers={homeStore.peers}/>
             </Card>
          </div>
       </>

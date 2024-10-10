@@ -117,10 +117,12 @@ export default function TopClientsChart({ peers }: { peers: Peer[] }) {
                            'bg-gray-200': index % 2 === 0
                         })}>
                            <span className="flex items-center ps-1">
-                              <FaSquare style={{ color: colors[index] }} />
+                              <FaSquare style={{ color: colors[index] }} className="pe-1" />
                               {` ${index + 1}. ${client}`}
                            </span>
-                           <span>{percentage}%</span>
+                           <span className="pe-1">
+                              {percentage}%
+                           </span>
                         </li>
                      )
                   })
