@@ -1,43 +1,17 @@
-import { useHomeStore } from "@/store/homeStore";
-import { formatLargeNumber, formatBytes } from "@/utils/utils";
-import { FaCircleNodes, FaCloudArrowUp, FaCloudArrowDown, FaDatabase } from "react-icons/fa6";
 
-type HeaderProps = {
-   totalConnections: number;
-   totalUploadTraffic: number;
-   totalDownloadTraffic: number;
-   txInMeempool: number;
+interface IHeaderPorps {
+   loading: boolean;
+   data: {
+      icon: JSX.Element;
+      title: string;
+      value: string;
+   }[];
 }
 
-export default function Header(props: HeaderProps) {
-
-   const homeStore = useHomeStore();     
-
-   const data = [
-      {
-         icon: <FaCircleNodes size={70} color="#36a3f7" />,
-         title: "Total Connections",
-         value: formatLargeNumber(props.totalConnections)
-      },
-      {
-         icon: <FaCloudArrowUp size={70} color="#f4516c" />,
-         title: "Upload Traffic",
-         value: formatBytes(props.totalUploadTraffic)
-      },
-      {
-         icon: <FaCloudArrowDown size={70} color="#34bfa3" />,
-         title: "Download Traffic",
-         value: formatBytes(props.totalDownloadTraffic)
-      },
-      {
-         icon: <FaDatabase size={70} color="#ffcb8c" />,
-         title: "TX in Mempool",
-         value: formatLargeNumber(props.txInMeempool)
-      }
-   ];
+export default function Header(props: IHeaderPorps) {
 
    function valueOrLoading(value: string) {
-      if (homeStore.loading) {
+      if (props.loading) {
          return (
             <div className="animate-pulse flex">
                <div className="flex-1">
@@ -54,7 +28,7 @@ export default function Header(props: HeaderProps) {
       <header>
          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 m-3">
             {
-               data.map((stat, i) => {
+               props.data.map((stat, i) => {
                   return (
                      <div key={i} className="flex items-center justify-between bg-white rounded-md p-5">
                         <div>
@@ -75,4 +49,5 @@ export default function Header(props: HeaderProps) {
          </div>
       </header>
    );
+
 }

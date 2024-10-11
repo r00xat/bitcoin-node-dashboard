@@ -1,14 +1,14 @@
 import Card from "@/components/UI/Card";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import { FaArrowRightLong, FaArrowLeftLong, FaArrowDown, FaArrowUp } from "react-icons/fa6";
+import { FaArrowRightLong, FaArrowLeftLong, FaArrowDown, FaArrowUp, FaBan, FaCircleNodes, FaCloudArrowDown, FaCloudArrowUp } from "react-icons/fa6";
 import { TbWorld } from "react-icons/tb";
 import { usePeerStore } from "@/store/peerStore";
-import { formatBytes, formatUnixTime } from "@/utils/utils";
+import { formatBytes, formatLargeNumber, formatUnixTime } from "@/utils/utils";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import React from "react";
 import useRefreshData from "@/hooks/useRefreshData";
-import Header from "./Header";
+import Header from "@/components/Header";
 
 type TableField = {
    name: string;
@@ -132,10 +132,29 @@ function Peers() {
    return (
       <>
          <Header
-            totalConnections={peerStore.peers.length}
-            allTimeUploadTraffic={peerStore.allTimeUploadTraffic}
-            allTimeDownloadTraffic={peerStore.allTimeDownloadTraffic}
-            bannedPeers={peerStore.banned}
+            loading={peerStore.loading}
+            data={[
+               {
+                  icon: <FaCircleNodes size={70} color="#36a3f7" />,
+                  title: "Total Connections",
+                  value: formatLargeNumber(peerStore.peers.length)
+               },
+               {
+                  icon: <FaCloudArrowUp size={70} color="#f4516c" />,
+                  title: "All Time Upload Traffic",
+                  value: formatBytes(peerStore.allTimeUploadTraffic)
+               },
+               {
+                  icon: <FaCloudArrowDown size={70} color="#34bfa3" />,
+                  title: "All Time Download Traffic",
+                  value: formatBytes(peerStore.allTimeDownloadTraffic)
+               },
+               {
+                  icon: <FaBan size={70} color="#ffcb8c" />,
+                  title: "Banned Peers",
+                  value: formatLargeNumber(peerStore.banned)
+               }
+            ]}
          />
          <Card className="m-3 mt-7" title="Connected Peers">
             <div className="border rounded-lg overflow-hidden text-sm md:text-base">

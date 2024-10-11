@@ -1,13 +1,13 @@
 import Card from "./UI/Card";
 
-export type StatsCardProps = {
+type StatsCardProps = {
    title: string;
    statsList: Array<StatsList>;
    loading?: boolean;
    className?: string;
 };
 
-export type StatsList = {
+type StatsList = {
    icon: JSX.Element | null;
    name: string;
    value: string | number | Array<string> | boolean;
