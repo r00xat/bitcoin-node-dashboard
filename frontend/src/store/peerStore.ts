@@ -1,31 +1,21 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import api from './api/api';
-import { IBaseApiStore } from './types';
-
-export type Peer = {
-   id: number;
-   address: string;
-   services: string[];
-   bytessent: number;
-   bytesrecv: number;
-   totalbytes: number;
-   conectionTime: number;
-   version: number;
-   subversion: string;
-   connection_type: string;
-   inbound: boolean;
-}
+import { IBaseApiStore, IPeer } from './types';
 
 interface IPeerStore extends IBaseApiStore {
-   peers: Peer[];
-   loading: boolean;
-   fetch(): unknown;
+   allTimeUploadTraffic: number;
+   allTimeDownloadTraffic: number;
+   banned: number;
+   peers: IPeer[];
    sortPeers(sortField: unknown, order: string): unknown;
 }
 
 export const usePeerStore = create<IPeerStore>()(
    devtools((set) => ({
+      allTimeUploadTraffic: 0,
+      allTimeDownloadTraffic: 0,
+      banned: 0,
       peers: [],
       loading: false,
       fetch: async () => {
@@ -33,18 +23,18 @@ export const usePeerStore = create<IPeerStore>()(
          await api.get('/bitcoin/peers')
             .then(({ data }) => {
                set({
-                  peers: data,
+                  allTimeUploadTraffic: data.allTimeUploadTraffic,
+                  allTimeDownloadTraffic: data.allTimeDownloadTraffic,
+                  banned: data.banned,
+                  peers: data.peers,
                   loading: false
-               },
-                  false,
-                  'fetchPeerStore'
-               );
+               });
             })
             .catch(() => {
                set({ loading: false });
             });
       },
-      sortPeers: (sortField: keyof Peer, order: string) => {
+      sortPeers: (sortField: keyof IPeer, order: string) => {
          set((state) => ({
             peers: state.peers.sort((a, b) => {
                if (typeof a[sortField] === 'string' && typeof b[sortField] === 'string') {

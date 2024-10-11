@@ -40,6 +40,21 @@ async function home() {
    }
 }
 
+async function peers() {
+   const batch = [
+      { method: 'getpeerinfo', parameters: [] },
+      { method: 'listbanned', parameters: [] },
+   ];
+
+   const [peers, banned] = await client.command(batch);
+
+   return {
+      peers,
+      banned
+   };
+}
+
 export default {
-   home
+   home,
+   peers
 };

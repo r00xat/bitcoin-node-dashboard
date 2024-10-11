@@ -112,6 +112,35 @@ router.get('/home', async function (req, res, next) {
    }
 });
 
+router.get('/peers', async function (req, res, next) {
+   try {
+      const { peers, banned } = await bitcoinService.peers();
+
+      res.json({
+         allTimeUploadTraffic: await getStat("allTimeBytesSent"),
+         allTimeDownloadTraffic: await getStat("allTimeBytesRecv"),
+         banned: banned.length,
+         peers: peers.map(peer => {
+            return {
+               id: peer.id,
+               address: peer.addr,
+               services: peer.servicesnames,
+               bytessent: peer.bytessent,
+               bytesrecv: peer.bytesrecv,
+               totalbytes: peer.bytessent + peer.bytesrecv,
+               conectionTime: peer.conntime,
+               version: peer.version,
+               subversion: peer.subver.replace(/^\/+/, '').replace(/\/+$/, ''),
+               connection_type: peer.connection_type,
+               inbound: peer.inbound,
+            }
+         })
+      });
+   } catch (error) {
+      return next(error);
+   }
+});
+
 router.use((error, req, res, next) => {
    console.error(error);
 

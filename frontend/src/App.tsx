@@ -46,7 +46,7 @@ const router = createBrowserRouter([
          {
             path: "/peers",
             async lazy() {
-               const Peers = await import("@/views/Peers");
+               const Peers = await import("@/views/Peers/Peers");
                return { Component: Peers.default };
             }
          }
