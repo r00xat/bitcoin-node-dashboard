@@ -192,12 +192,14 @@ function Peers() {
                      </tr>
                   </thead>
                   <tbody>
-                     {!peerStore.loading && (
-                        <tr>
-                           <td className="animate-pulse" colSpan={ }>
-                              <div className="h-5 bg-slate-200 rounded" />
-                           </td>
-                        </tr>
+                     {peerStore.loading && (
+                        Array.from({ length: 10 }).map((_, index) => (
+                           <tr key={index} className="border-b odd:bg-gray-50">
+                              <td colSpan={tableFields.length}>
+                                 <div className="m-2 h-9 bg-slate-200 animate-pulse rounded" />
+                              </td>
+                           </tr>
+                        ))
                      )}
                      {!peerStore.loading && peerStore.peers.map((peer) => (
                         <React.Fragment key={peer.id}>
