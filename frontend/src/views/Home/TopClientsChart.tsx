@@ -10,10 +10,11 @@ import { PieChart, PieSeriesOption } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 
-import { Peer, usePeerStore } from '@/store/peerStore';
+import { usePeerStore } from '@/store/peerStore';
 import { FaSquare } from 'react-icons/fa6';
 import clsx from 'clsx';
 import LoadingSpiner from '@/components/UI/LoadingSpiner';
+import { IPeer } from '@/store/types';
 
 type EChartsOption = echarts.ComposeOption<
    TooltipComponentOption | LegendComponentOption | PieSeriesOption
@@ -28,7 +29,7 @@ echarts.use([
 ]);
 
 
-export default function TopClientsChart({ peers }: { peers: Peer[] }) {
+export default function TopClientsChart({ peers }: { peers: IPeer[] }) {
 
    const [chart, setChart] = useState<echarts.ECharts>();
    const chartRef = useRef<HTMLDivElement>(null);
@@ -170,7 +171,7 @@ const resizeObserver = new window.ResizeObserver((entries) => {
    });
 });
 
-const getMostCommonClient = (peers: Peer[]) => {
+const getMostCommonClient = (peers: IPeer[]) => {
    const clients: Map<string, number> = new Map();
 
    peers.forEach(peer => {
