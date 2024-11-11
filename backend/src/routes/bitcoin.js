@@ -1,5 +1,6 @@
 import express from 'express';
 import bitcoinService from '../services/bitcoin.js';
+import { getStat } from '../database/db.js';
 
 const router = express.Router();
 
