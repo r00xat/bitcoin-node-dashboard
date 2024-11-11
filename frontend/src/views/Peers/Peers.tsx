@@ -1,6 +1,6 @@
 import Card from "@/components/UI/Card";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import { FaArrowRightLong, FaArrowLeftLong, FaArrowDown, FaArrowUp, FaBan, FaCircleNodes, FaCloudArrowDown, FaCloudArrowUp } from "react-icons/fa6";
+import { FaArrowRightLong, FaArrowLeftLong, FaArrowDown, FaArrowUp, FaBan, FaCircleNodes, FaCloudArrowDown, FaCloudArrowUp, FaIdCardClip } from "react-icons/fa6";
 import { TbWorld } from "react-icons/tb";
 import { usePeerStore } from "@/store/peerStore";
 import { formatBytes, formatLargeNumber, formatUnixTime } from "@/utils/utils";
@@ -158,7 +158,7 @@ function Peers() {
          />
          <Card className="m-3 mt-7" title="Connected Peers">
             <div className="border rounded-lg overflow-hidden text-sm md:text-base">
-               <table className="table-auto w-full">
+               <table className="table-fixed w-full">
                   <thead className="bg-gray-200 rounded-2xl border-b">
                      <tr>
                         {tableFields.map((field) => (
@@ -192,7 +192,14 @@ function Peers() {
                      </tr>
                   </thead>
                   <tbody>
-                     {peerStore.peers.map((peer) => (
+                     {!peerStore.loading && (
+                        <tr>
+                           <td className="animate-pulse" colSpan={ }>
+                              <div className="h-5 bg-slate-200 rounded" />
+                           </td>
+                        </tr>
+                     )}
+                     {!peerStore.loading && peerStore.peers.map((peer) => (
                         <React.Fragment key={peer.id}>
                            <tr
                               onClick={() => handleRowClick(peer.id)}
@@ -201,8 +208,12 @@ function Peers() {
                               <td className={clsx(showOrHideValue('id'))}>
                                  {peer.id}
                               </td>
-                              <td className={showOrHideValue('address')}>
-                                 {peer.address.split(':')[0]}
+                              <td className={showOrHideValue('address') + " truncate"}>
+                                 {
+                                    peer.address.includes('[')
+                                       ? peer.address.split(']:')[0].replace('[', '')
+                                       : peer.address.split(':')[0]
+                                 }
                               </td>
                               <td className={showOrHideValue('direction')}>
                                  <span className="flex items-center justify-center">
@@ -236,6 +247,11 @@ function Peers() {
                                           <TbWorld className="mr-1" />
                                           <span className="font-medium me-1">Full address:</span>
                                           {peer.address}
+                                       </div>
+                                       <div className="flex justify-center sm:justify-between items-center">
+                                          <FaIdCardClip className="mr-1" />
+                                          <span className="font-medium me-1">Client:</span>
+                                          {peer.subversion}
                                        </div>
                                        <div className="flex justify-center sm:justify-between items-center">
                                           <FaArrowUp className="mr-1" />
