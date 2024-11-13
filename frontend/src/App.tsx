@@ -1,8 +1,11 @@
 import NavBar from '@/components/NavBar';
-import { useNavigate , Outlet, createBrowserRouter, RouterProvider, useLocation } from 'react-router-dom';
+import { useNavigate, Outlet, createBrowserRouter, RouterProvider, useLocation } from 'react-router-dom';
 import React, { useEffect } from 'react';
 import Login from '@/views/Login';
 import { useUserStore } from "@/store/userStore";
+import { Bounce, ToastContainer } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 const AuthLayout: React.FC = () => {
 
@@ -18,10 +21,23 @@ const AuthLayout: React.FC = () => {
 
    return (
       <React.Fragment>
-         { userStore.isLogged && (
+         {userStore.isLogged && (
             <React.Fragment>
                <NavBar />
                <Outlet />
+               <ToastContainer
+                  position="bottom-right"
+                  autoClose={5000}
+                  limit={2}
+                  hideProgressBar={true}
+                  newestOnTop
+                  closeOnClick
+                  rtl={false}
+                  draggable={false}
+                  pauseOnHover
+                  theme="colored"
+                  transition={Bounce}
+               />
             </React.Fragment>
          )}
       </React.Fragment>

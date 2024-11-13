@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import api from './api/api';
 import { IBaseApiStore, IBlockchainStore, IMainStore, INetworkInfo, INodeStore, IPeer } from './types';
+import { AxiosError } from 'axios';
+import { toastError } from '@/utils/toats';
 
 interface IHomeStore extends IBaseApiStore {
    main: IMainStore;
@@ -108,8 +110,9 @@ export const useHomeStore = create<IHomeStore>()(
                   loading: false
                })
             })
-            .catch(() => {
+            .catch((e: AxiosError) => {
                set({ loading: false });
+               toastError(e);
             });
       }
    }))

@@ -147,7 +147,7 @@ router.use((error, req, res, next) => {
 
    switch (error.code) {
       case 'ECONNREFUSED':
-         return res.status(504).json({ error: 'Connection refused by bitcoin host' });
+         return res.status(504).json({ error: 'Connection refused by host' });
       case 'ETIMEDOUT':
          return res.status(504).json({ error: 'Request Timeout' });
       case 401:

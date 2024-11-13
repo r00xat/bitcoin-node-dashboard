@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import api from './api/api';
 import { IBaseApiStore, IPeer } from './types';
+import { AxiosError } from 'axios';
+import { toastError } from '@/utils/toats';
 
 interface IPeerStore extends IBaseApiStore {
    allTimeUploadTraffic: number;
@@ -30,8 +32,9 @@ export const usePeerStore = create<IPeerStore>()(
                   loading: false
                });
             })
-            .catch(() => {
+            .catch((e: AxiosError) => {
                set({ loading: false });
+               toastError(e);
             });
       },
       sortPeers: (sortField: keyof IPeer, order: string) => {
