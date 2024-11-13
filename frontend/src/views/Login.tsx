@@ -32,7 +32,7 @@ export default function Login() {
 
       setShowPassword(false);
 
-      await userStore.login(password)
+      await userStore.login(password, rememberMe)
          .then(() => {
             return navigate('/');
          })
