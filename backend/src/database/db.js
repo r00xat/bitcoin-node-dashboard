@@ -1,18 +1,51 @@
-import Database from "better-sqlite3";
+import mariadb from 'mariadb';
 
-const db = new Database("bnd.db");
+const pool = mariadb.createPool({
+   host: process.env.DB_HOST,
+   user: process.env.DB_USER,
+   password: process.env.DB_PASS,
+   database: process.env.DB_NAME,
+   connectionLimit: 5
+});
 
-export function initDB() {
-   db.exec('CREATE TABLE IF NOT EXISTS stats (key TEXT PRIMARY KEY, value NUMERIC)');
+export async function initDB() {
+   let conn;
+   try {
+      conn = await pool.getConnection();
+      await conn.query('CREATE TABLE IF NOT EXISTS stats (`key` VARCHAR(255) PRIMARY KEY, value BIGINT NOT NULL)');
+   } catch (err) {
+      console.error('Error initializing database:', err);
+      throw err;
+   } finally {
+      if (conn) conn.end();
+   }
 }
 
-export function insertOrUpdateStat(key, value) {
-   if (value === undefined || value === null || typeof value != 'number') throw new Error('Invalid value');
-   const insert = db.prepare('INSERT OR REPLACE INTO stats (key, value) VALUES (@key, @value)');
-   insert.run({ key, value });
+export async function insertOrUpdateStat(key, value) {
+   if (value === undefined || value === null || typeof value !== 'number') {
+      throw new Error('Invalid value');
+   }
+
+   let conn;
+   try {
+      conn = await pool.getConnection();
+      await conn.query('INSERT INTO stats (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)', [key, value]);
+   } catch (err) {
+      console.error('Error inserting or updating stat:', err);
+   } finally {
+      if (conn) conn.end();
+   }
 }
 
-export function getStat(key) {
-   const query = db.prepare('SELECT value FROM stats WHERE key = @key');
-   return query.get({ key })?.value;
+export async function getStat(key) {
+   let conn;
+   try {
+      conn = await pool.getConnection();
+      const rows = await conn.query('SELECT value FROM stats WHERE `key` = ?', [key]);
+      return rows[0]?.value;
+   } catch (err) {
+      console.error('Error getting stat:', err);
+   } finally {
+      if (conn) conn.end();
+   }
 }
