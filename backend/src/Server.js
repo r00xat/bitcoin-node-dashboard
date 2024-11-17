@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import history from 'connect-history-api-fallback';
+import path from 'path';
 
 import { requireLogin } from './middlewares/auth.js';
 
@@ -19,6 +20,7 @@ class Server {
 
       this.routes();
 
+      this.app.use("/", express.static(path.join('../frontend/dist')));
       this.app.use(history());
    }
 
@@ -33,11 +35,12 @@ class Server {
    }
 
    routes() {
-      this.app.use('/ping', ping);
+      const roter = express.Router();
+      roter.use('/ping', ping);
+      roter.use('/auth', auth);
+      roter.use('/bitcoin', requireLogin, bitcoin);
 
-      this.app.use('/bitcoin', requireLogin, bitcoin);
-
-      this.app.use('/auth', auth);
+      this.app.use('/api', roter);
    }
 
    listen() {

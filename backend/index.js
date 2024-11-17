@@ -1,6 +1,13 @@
 import 'dotenv/config';
 
 import { initDB } from './src/database/db.js';
+import { storeStats } from './src/services/storeStats.js';
+
+import Server from './src/Server.js';
+new Server().listen();
+
+//Initialize database
+
 console.log('Initializing database...');
 await initDB()
    .then(() => {
@@ -11,11 +18,7 @@ await initDB()
       process.exit(1);
    });
 
-import Server from './src/Server.js';
-new Server().listen();
-
 //Store stats service
-import { storeStats } from './src/services/storeStats.js';
 storeStats();
 setInterval(() => {
    storeStats();

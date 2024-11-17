@@ -42,7 +42,8 @@ export async function getStat(key) {
    try {
       conn = await pool.getConnection();
       const rows = await conn.query('SELECT value FROM stats WHERE `key` = ?', [key]);
-      return rows[0]?.value;
+      const value = rows[0]?.value;
+      return value !== undefined ? Number(value) : undefined;
    } catch (err) {
       console.error('Error getting stat:', err);
    } finally {
