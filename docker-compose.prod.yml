@@ -1,25 +1,27 @@
 services:
-   frontend:
-      container_name: bnd-frontend
+   app:
+      container_name: bnd
       build:
-         context: ./frontend
+         context: .
          dockerfile: Dockerfile
       ports:
-         - '1100:80'
-      environment:
-        - VITE_BACKEND_URL=${VITE_BACKEND_URL}
-
-   backend:
-      container_name: bnd-backend
-      build:
-         context: ./backend
-         dockerfile: Dockerfile
-      ports:
-         - '1101:1101'
+         - 1100:1101
       env_file:
          - ./.env
+      depends_on:
+         db:
+            condition: service_healthy
+      
+   db:
+      container_name: bnd-db
+      image: mariadb:11.4.4
       environment:
-         BTC_HOST: ${BTC_HOST}
-         BTC_PORT: ${BTC_PORT}
-         BTC_USERNAME: ${BTC_USERNAME}
-         BTC_PASSWORD: ${BTC_PASSWORD}
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: bnd
+        MYSQL_USER: bnd
+        MYSQL_PASSWORD: bnd
+      healthcheck:
+         test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+         interval: 10s
+         timeout: 5s
+         retries: 3
