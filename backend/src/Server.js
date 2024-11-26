@@ -20,8 +20,8 @@ class Server {
 
       this.routes();
 
-      this.app.use("/", express.static(path.join('../frontend/dist')));
       this.app.use(history());
+      this.app.use("/", express.static(path.join('../frontend/dist')));
    }
 
    middlewares() {
