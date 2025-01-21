@@ -11,17 +11,3 @@ services:
       depends_on:
          db:
             condition: service_healthy
-      
-   db:
-      container_name: bnd-db
-      image: mariadb:11.4.4
-      environment:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: bnd
-        MYSQL_USER: bnd
-        MYSQL_PASSWORD: bnd
-      healthcheck:
-         test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-         interval: 10s
-         timeout: 5s
-         retries: 3

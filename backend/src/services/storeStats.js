@@ -26,11 +26,11 @@ export async function storeStats() {
          updatedTotalBytesSent += (currentBytesSent - (await getStat("lastBytesSent") || 0));
       }
 
-      insertOrUpdateStat("allTimeBytesRecv", updatedTotalBytesRecv);
-      insertOrUpdateStat("allTimeBytesSent", updatedTotalBytesSent);
-      insertOrUpdateStat("uptime", uptime);
-      insertOrUpdateStat("lastBytesRecv", currentBytesRecv);
-      insertOrUpdateStat("lastBytesSent", currentBytesSent);
+      await insertOrUpdateStat("allTimeBytesRecv", updatedTotalBytesRecv);
+      await insertOrUpdateStat("allTimeBytesSent", updatedTotalBytesSent);
+      await insertOrUpdateStat("uptime", uptime);
+      await insertOrUpdateStat("lastBytesRecv", currentBytesRecv);
+      await insertOrUpdateStat("lastBytesSent", currentBytesSent);
 
       console.log(new Date().toISOString() + " Stored stats successfully");
    } catch (error) {

@@ -1,23 +1,35 @@
-import mariadb from 'mariadb';
+import { JSONFilePreset } from 'lowdb/node';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const pool = mariadb.createPool({
-   host: process.env.DB_HOST,
-   user: process.env.DB_USER,
-   password: process.env.DB_PASS,
-   database: process.env.DB_NAME,
-   connectionLimit: 5
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const dbFilePath = path.resolve(__dirname, '../../stats.json');
+const defaultData = { stats: {} };
+const db = await JSONFilePreset(dbFilePath, defaultData);
+
+async function readDB() {
+   await db.read();
+   db.data = db.data || defaultData;
+   return db.data;
+}
+
+async function writeDB(data) {
+   db.data = data;
+   await db.write();
+}
 
 export async function initDB() {
-   let conn;
    try {
-      conn = await pool.getConnection();
-      await conn.query('CREATE TABLE IF NOT EXISTS stats (`key` VARCHAR(255) PRIMARY KEY, value BIGINT NOT NULL)');
+      await readDB();
+      if (Object.keys(db.data.stats).length === 0) {
+         await writeDB({ stats: {} });
+      }
+      console.log('Database initialized');
    } catch (err) {
       console.error('Error initializing database:', err);
       throw err;
-   } finally {
-      if (conn) conn.end();
    }
 }
 
@@ -26,27 +38,21 @@ export async function insertOrUpdateStat(key, value) {
       throw new Error('Invalid value');
    }
 
-   let conn;
    try {
-      conn = await pool.getConnection();
-      await conn.query('INSERT INTO stats (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)', [key, value]);
+      await readDB();
+      db.data.stats[key] = value;
+      await writeDB(db.data);
    } catch (err) {
       console.error('Error inserting or updating stat:', err);
-   } finally {
-      if (conn) conn.end();
    }
 }
 
 export async function getStat(key) {
-   let conn;
    try {
-      conn = await pool.getConnection();
-      const rows = await conn.query('SELECT value FROM stats WHERE `key` = ?', [key]);
-      const value = rows[0]?.value;
+      const data = await readDB();
+      const value = data.stats[key];
       return value !== undefined ? Number(value) : undefined;
    } catch (err) {
       console.error('Error getting stat:', err);
-   } finally {
-      if (conn) conn.end();
    }
 }

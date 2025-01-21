@@ -12,7 +12,7 @@ services:
          - ./frontend:/app
          - /app/node_modules/
       ports:
-         - '1100:1100'
+         - '2100:1100'
       environment:
          - VITE_BACKEND_URL=${VITE_BACKEND_URL}
 
@@ -21,29 +21,10 @@ services:
       build:
          context: ./backend
          dockerfile: Dockerfile.dev
-      depends_on:
-         db:
-            condition: service_healthy
       env_file:
          - ./.env
       volumes:
          - ./backend:/app
          - /app/node_modules/
       ports:
-         - '1101:1101'
-
-   db:
-      container_name: bnd-db
-      image: mariadb:11.4.4
-      environment:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: bnd
-        MYSQL_USER: bnd
-        MYSQL_PASSWORD: bnd
-      ports:
-        - '3306:3306'
-      healthcheck:
-         test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-         interval: 10s
-         timeout: 5s
-         retries: 3
+         - '2101:1101'
