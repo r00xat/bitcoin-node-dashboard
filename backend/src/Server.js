@@ -16,6 +16,10 @@ class Server {
       this.port = 1101;
       this.app.enable('trust proxy');
 
+      if (!process.env.JWT_SECRET) {
+         process.env.JWT_SECRET = this.generateSecret();
+      }
+
       this.middlewares();
 
       this.routes();
@@ -41,6 +45,17 @@ class Server {
       roter.use('/bitcoin', requireLogin, bitcoin);
 
       this.app.use('/api', roter);
+   }
+
+   generateSecret() {
+      const length = 64;
+      const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._!/';
+      let secret = '';
+      for (let i = 0; i < length; i++) {
+         const randomIndex = crypto.randomInt(0, charset.length);
+         secret += charset[randomIndex];
+      }
+      return secret;
    }
 
    listen() {
