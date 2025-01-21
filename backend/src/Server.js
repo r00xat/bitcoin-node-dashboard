@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import history from 'connect-history-api-fallback';
 import path from 'path';
+import crypto from 'crypto';
 
 import { requireLogin } from './middlewares/auth.js';
 
