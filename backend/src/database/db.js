@@ -1,12 +1,15 @@
 import { JSONFilePreset } from 'lowdb/node';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const dbFilePath = path.resolve(__dirname, '../../stats.json');
+const dbDirectory = process.env.DB_DIRECTORY || '/data';
+const dbFilePath = path.resolve(dbDirectory, 'stats.json');
 const defaultData = { stats: {} };
+
+if (!fs.existsSync(dbDirectory)) {
+   fs.mkdirSync(dbDirectory, { recursive: true });
+}
+
 const db = await JSONFilePreset(dbFilePath, defaultData);
 
 async function readDB() {
