@@ -1,10 +1,40 @@
 import bitcoinRPC from 'bitcoin-core';
+import path from 'path';
+import fs from 'fs';
+
+const BTC_PORT = process.env.BTC_PORT || 8332;
+const BTC_HOST = process.env.BTC_HOST || "localhost";
+var BTC_USERNAME = process.env.BTC_USERNAME;
+var BTC_PASSWORD = process.env.BTC_PASSWORD;
+const BITCOIND_DIR = process.env.BITCOIND_DIR;
+
+if (BITCOIND_DIR) {
+   var auth = getAuthFromCookieFile(BITCOIND_DIR);
+   BTC_USERNAME = auth[0];
+   BTC_PASSWORD = auth[1];
+}
+
+function getAuthFromCookieFile(btcDir) {
+   const cookiePath = path.join(btcDir, ".cookie");
+   if (fs.existsSync(cookiePath)) {
+      try {
+         var cookie = fs.readFileSync(cookiePath, "utf8");
+         var auth = cookie.split(':');
+         if (auth.length != 2) throw new Error("Error: auth cookie doesn't contain colon");
+         return auth;
+      } catch (e) {
+         throw new Error(e);
+      }
+   } else {
+      throw new Error("Cookie file not found");
+   }
+}
 
 export const client = new bitcoinRPC({
-   host: process.env.BTC_HOST,
-   port: process.env.BTC_PORT,
-   username: process.env.BTC_USERNAME,
-   password: process.env.BTC_PASSWORD,
+   host: BTC_HOST,
+   port: BTC_PORT,
+   username: BTC_USERNAME,
+   password: BTC_PASSWORD,
    timeout: 120000,
 });
 
