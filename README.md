@@ -14,7 +14,7 @@ services:
       image: ghcr.io/montejojorge/bitcoin-node-dashboard:latest
       container_name: bnd
       ports:
-         1100:1101
+         - 1100:1101
       volumes:
          - ~/backup-stats:/data
       environment:
