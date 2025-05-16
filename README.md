@@ -17,10 +17,12 @@ services:
          - 1100:1101
       volumes:
          - ~/backup-stats:/data
+         - ~/.bitcoin:~/.bitcoin:ro
       environment:
          LOGIN_PASSWORD: your-password
          BTC_HOST: 192.168.1.10
          BTC_PORT: 8332
+         BITCOIND_DIR: ~/.bitcoin # Or you can use user/pass auth
          BTC_USERNAME: your-rpc-usern
          BTC_PASSWORD: your-rpc-password
       restart: unless-stopped
