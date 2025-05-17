@@ -4,8 +4,8 @@ import fs from 'fs';
 
 const BTC_PORT = process.env.BTC_PORT || 8332;
 const BTC_HOST = process.env.BTC_HOST || "localhost";
-var BTC_USERNAME = process.env.BTC_USERNAME;
-var BTC_PASSWORD = process.env.BTC_PASSWORD;
+let BTC_USERNAME = process.env.BTC_USERNAME || "";
+let BTC_PASSWORD = process.env.BTC_PASSWORD || "";
 const BITCOIND_DIR = process.env.BITCOIND_DIR;
 
 if (BITCOIND_DIR) {
