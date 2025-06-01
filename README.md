@@ -5,6 +5,8 @@
 
 Bitcoin Node Dashboard is a dashboard to see info about your Bitcoin Node.
 
+I use this fork to deactivate the weblogin. This fork is currently still under development. There will be no docker image, you will have to build it yourself.
+
 ![image](https://github.com/user-attachments/assets/d7dc4e30-7f24-4730-a7e7-7e0c86a5db26)
 
 ## Usage
