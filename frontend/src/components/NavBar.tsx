@@ -94,7 +94,7 @@ export default function NavBar() {
                   <div className="flex flex-shrink-0 items-center">
                      <img className="h-8 w-auto me-1" src={Logo} style={{ transform: 'rotate(13.88deg)' }} />
                      <div className="text-white text-base font-bold">
-                        Bitcoin Node Dasboard
+                        Bitcoin Node Dashboard
                      </div>
                   </div>
                   <div className="hidden flex-row sm:ml-6 sm:flex w-full justify-between">
