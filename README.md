@@ -8,7 +8,7 @@ Bitcoin Node Dashboard is a dashboard to see info about your Bitcoin Node.
 **This fork removes the weblogin.**
 
 > [!NOTE]
-> **Changed or deleted files**<br>
+> **Changed or deleted files**<br><br>
 >        modified:   backend/src/Server.js<br>
 >        deleted:    backend/src/middlewares/auth.js<br>
 >        deleted:    backend/src/routes/auth.js<br>
@@ -23,7 +23,8 @@ Bitcoin Node Dashboard is a dashboard to see info about your Bitcoin Node.
 
 ## Create your own docker image
 ```
-git clone https://github.com/r00xat/bitcoin-node-dashboard.git		
+git clone https://github.com/r00xat/bitcoin-node-dashboard.git
+cd bitcoin-node-dashboard/
 docker build -t bitcoin-node-dashboard:own .
 ```
 
