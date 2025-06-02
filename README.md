@@ -8,16 +8,16 @@ Bitcoin Node Dashboard is a dashboard to see info about your Bitcoin Node.
 **This fork removes the weblogin.**
 
 > [!NOTE]
-> **Changed or deleted files**
->        modified:   backend/src/Server.js
->        deleted:    backend/src/middlewares/auth.js
->        deleted:    backend/src/routes/auth.js
->        modified:   frontend/src/App.tsx
->        modified:   frontend/src/components/NavBar.tsx
->        modified:   frontend/src/store/api/api.ts
->        modified:   frontend/src/store/userStore.ts
->        deleted:    frontend/src/utils/auth.ts
->        deleted:    frontend/src/views/Login.tsx
+> **Changed or deleted files**<br>
+>        modified:   backend/src/Server.js<br>
+>        deleted:    backend/src/middlewares/auth.js<br>
+>        deleted:    backend/src/routes/auth.js<br>
+>        modified:   frontend/src/App.tsx<br>
+>        modified:   frontend/src/components/NavBar.tsx<br>
+>        modified:   frontend/src/store/api/api.ts<br>
+>        modified:   frontend/src/store/userStore.ts<br>
+>        deleted:    frontend/src/utils/auth.ts<br>
+>        deleted:    frontend/src/views/Login.tsx<br>
 
 ![image](https://github.com/user-attachments/assets/d7dc4e30-7f24-4730-a7e7-7e0c86a5db26)
 
