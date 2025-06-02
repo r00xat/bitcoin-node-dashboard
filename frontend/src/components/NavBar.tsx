@@ -1,18 +1,12 @@
 import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { useNavigate } from "react-router-dom";
-import { FaArrowRightFromBracket } from "react-icons/fa6";
-import { useUserStore } from "@/store/userStore";
 import Logo from '@/icons/btc.svg';
 import './NavBar.scss'
 import RefreshTime from '@/components/RefreshTimer';
 
 export default function NavBar() {
    const [isOpen, setIsOpen] = useState(false);
-
-   const userStore = useUserStore();
-   const navigate = useNavigate();
 
    const links = [
       {
@@ -24,11 +18,6 @@ export default function NavBar() {
          path: '/peers'
       }
    ];
-
-   function handleLogout() {
-      userStore.logout();
-      navigate('/login');
-   }
 
    function Links() {
       const location = useLocation();
@@ -105,14 +94,6 @@ export default function NavBar() {
                         <RefreshTime />
                      </div>
                   </div>
-               </div>
-               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                  <button 
-                     type="button" 
-                     onClick={() => handleLogout()} 
-                     className="relative rounded-full bg-gray-800 p-3 text-gray-400 hover:text-white focus:outline-none hover:bg-gray-700">
-                     <FaArrowRightFromBracket />
-                  </button>
                </div>
             </div>
          </div>

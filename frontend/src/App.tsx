@@ -1,56 +1,31 @@
 import NavBar from '@/components/NavBar';
-import { useNavigate, Outlet, createBrowserRouter, RouterProvider, useLocation } from 'react-router-dom';
-import React, { useEffect } from 'react';
-import Login from '@/views/Login';
-import { useUserStore } from "@/store/userStore";
+import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom'; // Changed to remove Weblogin
+import React from 'react'; // Changed to remove Weblogin
 import { Bounce, ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 
-const AuthLayout: React.FC = () => {
-
-   const userStore = useUserStore();
-   const navigate = useNavigate();
-   const location = useLocation();
-
-   useEffect(() => {
-      if (!userStore.isLogged) {
-         return navigate("/login");
-      }
-   }, [userStore.isLogged, location.pathname]);
-
-   return (
-      <React.Fragment>
-         {userStore.isLogged && (
-            <React.Fragment>
-               <NavBar />
-               <Outlet />
-               <ToastContainer
-                  position="bottom-right"
-                  autoClose={5000}
-                  limit={2}
-                  hideProgressBar={true}
-                  newestOnTop
-                  closeOnClick
-                  rtl={false}
-                  draggable={false}
-                  pauseOnHover
-                  theme="colored"
-                  transition={Bounce}
-               />
-            </React.Fragment>
-         )}
-      </React.Fragment>
-   );
-}
-
 const router = createBrowserRouter([
    {
-      path: "/login",
-      element: <Login />
-   },
-   {
-      element: <AuthLayout />,
+      element: (
+        <React.Fragment>
+          <NavBar /> {}
+          <Outlet /> {}
+          <ToastContainer 
+            position="bottom-right"
+            autoClose={5000}
+            limit={2}
+            hideProgressBar={true}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            draggable={false}
+            pauseOnHover
+            theme="colored"
+            transition={Bounce}
+          />
+        </React.Fragment>
+      ),
       children: [
          {
             path: "/",
